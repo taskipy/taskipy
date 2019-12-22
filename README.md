@@ -1,4 +1,4 @@
-<img src="//raw.githubusercontent.com/illBeRoy/taskipy/master/logo.svg" width="150" />
+<img src="./logo.svg" width="150" />
 
 > the complementary task runner for python
 
