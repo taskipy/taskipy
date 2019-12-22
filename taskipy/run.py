@@ -1,28 +1,22 @@
-#!/usr/bin/env python3
-import argparse
+import os
 import subprocess
 import sys
 import toml
+from os import path
 from typing import List
 
-def run_commands_and_bail_on_first_fail(cmds: List[str]) -> int:
-    for cmd in cmds:
-        p = subprocess.Popen(cmd, shell=True)
-        p.wait()
-        if p.returncode != 0:
-            return p.returncode
+def run_task(task_name: str, cwd=os.curdir):
+    def run_commands_and_bail_on_first_fail(cmds: List[str]) -> int:
+        for cmd in cmds:
+            p = subprocess.Popen(cmd, shell=True, cwd=cwd)
+            p.wait()
+            if p.returncode != 0:
+                return p.returncode
 
-    return 0
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='task')
-    parser.add_argument('name', help='name of the task. found in pyproject.toml under [tool.taskify.tasks]')
-
-    args = parser.parse_args()
+        return 0
 
     try:
-        pyproject = toml.load('pyproject.toml')
+        pyproject = toml.load(path.join(cwd, 'pyproject.toml'))
     except FileNotFoundError:
         print('no pyproject.toml file found in this directory')
         sys.exit(1)
@@ -39,24 +33,23 @@ if __name__ == '__main__':
     commands = []
 
     try:
-        task = tasks[args.name]
+        task = tasks[task_name]
         commands.append(task)
     except:
-        print(f'could not find task "{args.name}""')
+        print(f'could not find task "{task_name}""')
         sys.exit(127)
 
     try:
-        pre_task = tasks[f'pre_{args.name}']
+        pre_task = tasks[f'pre_{task_name}']
         commands.insert(0, pre_task)
     except:
         pass
 
     try:
-        post_task = tasks[f'post_{args.name}']
+        post_task = tasks[f'post_{task_name}']
         commands.append(post_task)
     except:
         pass
 
     exit_code = run_commands_and_bail_on_first_fail(commands)
     sys.exit(exit_code)
-    

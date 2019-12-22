@@ -1,8 +1,23 @@
 [tool.poetry]
 name = "taskipy"
 description = "tasks runner for python projects"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Roy Sommer <roy@sommer.co.il>"]
+readme = "README.md"
+repository = "https://github.com/illBeRoy/taskipy"
+license = "MIT"
+keywords = ["tasks", "task runner", "development"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Build Tools"
+]
+packages = [
+    { include = "taskipy" }
+]
+
+[tool.poetry.scripts]
+task = 'taskipy.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.5"
@@ -16,9 +31,13 @@ rope = "^0.14.0"
 [tool.taskify.tasks]
 test = "python -m unittest tests/test_*.py"
 post_test = "./task lint"
+
 lint = "./task lint_pylint && ./task lint_mypy"
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
+
+pre_publish = "./task test"
+publish = "poetry publish --build"
 
 [build-system]
 requires = ["poetry>=0.12"]

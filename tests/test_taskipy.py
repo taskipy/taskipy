@@ -14,7 +14,7 @@ class TaskipyTestCase(unittest.TestCase):
             tmp_dir.clean()
 
     def run_task(self, task: str, cwd=os.curdir) -> Tuple[int, str, str]:
-        executable_path = path.abspath('taskipy/run.py')
+        executable_path = path.abspath('task')
 
         proc = subprocess.Popen([executable_path, task], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
         stdout, stderr = proc.communicate()
