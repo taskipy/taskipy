@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+version = "0.1.0"
+authors = ["Roy Sommer <roy@sommer.co.il>"]
+
+[tool.poetry.dependencies]
+python = "^3.5"
+toml = "^0.10.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.4.4"
+mypy = "^0.761"
+rope = "^0.14.0"
+
+[tool.taskify.tasks]
+test = "python -m unittest tests/test_*.py"
+post_test = "./task lint"
+lint = "./task lint_pylint && ./task lint_mypy"
+lint_pylint = "pylint tests taskipy"
+lint_mypy = "mypy tests taskipy"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

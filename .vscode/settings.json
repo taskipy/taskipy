@@ -1,0 +1,7 @@
+{
+  "python.pythonPath": "/Users/roysom/Library/Caches/pypoetry/virtualenvs/taskipy-hc1uaeBb-py3.8/bin/python",
+  "editor.tabSize": 4,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": true
+}

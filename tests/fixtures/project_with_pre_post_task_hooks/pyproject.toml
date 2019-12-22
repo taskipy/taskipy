@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskify.tasks]
+pre_hello = "echo 'pre_task'"
+hello = "echo 'hello'"
+post_hello = "echo 'post_task'"
+
+pre_hello_failed_pretask = "echo 'pre_task' && exit 1"
+hello_failed_pretask = "echo 'hello'"
+post_hello_failed_pretask = "echo 'post_task'"
+
+pre_hello_failed_posttask = "echo 'pre_task'"
+hello_failed_posttask = "echo 'hello'"
+post_hello_failed_posttask = "echo 'post_task' && exit 1"
