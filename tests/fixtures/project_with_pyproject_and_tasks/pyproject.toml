@@ -2,7 +2,7 @@
 name = "taskipy"
 description = "tasks runner for python projects"
 
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 create_hello_txt = "echo 'hello, world' > hello.txt"
 exit_17 = "exit 17"
 print_hello_stdout = "echo 'hello stdout'"

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "taskipy"
 description = "tasks runner for python projects"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Roy Sommer <roy@sommer.co.il>"]
 readme = "README.md"
 repository = "https://github.com/illBeRoy/taskipy"
@@ -28,7 +28,7 @@ pylint = "^2.4.4"
 mypy = "^0.761"
 rope = "^0.14.0"
 
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 test = "python -m unittest tests/test_*.py"
 post_test = "./task lint"
 

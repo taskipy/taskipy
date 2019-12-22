@@ -113,7 +113,7 @@ class TaskRunFailTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_from_fixture('project_with_pyproject_without_tasks_section')
         exit_code, stdout, _ = self.run_task('task_that_does_not_exist', cwd=cwd)
 
-        self.assertSubstr('no tasks found. add a [tool.taskify.tasks] section to your pyproject.toml', stdout)
+        self.assertSubstr('no tasks found. add a [tool.taskipy.tasks] section to your pyproject.toml', stdout)
         self.assertEqual(exit_code, 127)
 
     def test_exiting_with_code_1_and_printing_if_no_pyproject_toml_file_found(self):

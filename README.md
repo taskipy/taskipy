@@ -38,7 +38,7 @@ poetry add --dev taskipy
 ```
 
 ### Adding Tasks 
-In your `pyproject.toml` file, add a new section called `[tool.taskify.tasks]`.
+In your `pyproject.toml` file, add a new section called `[tool.taskipy.tasks]`.
 
 The section is a key-value map, from the names of the task to the actual command that should be run in the shell.
 
@@ -46,7 +46,7 @@ Example:
 
 __pyproject.toml__
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 test = "python -m unittest tests/test_*.py"
 lint = "pylint tests taskipy"
 ```
@@ -67,14 +67,14 @@ poetry run task test
 #### Grouping Subtasks Together
 Some tasks are composed of multiple subtasks. Instead of writing plain shell commands and stringing them together, you can break them down into multiple subtasks:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
 ```
 
 And then create a composite task:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 lint = "task lint_pylint && task lint_mypy"
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
@@ -83,14 +83,14 @@ lint_mypy = "mypy tests taskipy"
 #### Pre Task Hook
 Tasks might also depend on one another. For example, tests might require some binaries to be built. Take the two following commands, for instance:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 test = "python -m unittest tests/test_*.py"
 build = "make ."
 ```
 
 You could make tests depend on building, by using the **pretask hook**:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 pre_test = "task build"
 test = "python -m unittest tests/test_*.py"
 build = "make ."
@@ -101,14 +101,14 @@ The pretask hook looks for `pre_<task_name>` task for a given `task_name`. It wi
 #### Post Task Hook
 From time to time, you might want to run a task in conjuction with another. For example, you might want to run linting after a successful test run. Take the two following commands, for instance:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 test = "python -m unittest tests/test_*.py"
 lint = "pylint tests taskipy"
 ```
 
 You could make tests trigger linting, by using the **posttask hook**:
 ```toml
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 test = "python -m unittest tests/test_*.py"
 post_test = "task lint"
 lint = "pylint tests taskipy"

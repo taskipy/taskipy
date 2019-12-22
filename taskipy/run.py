@@ -25,9 +25,9 @@ def run_task(task_name: str, cwd=os.curdir):
         sys.exit(1)
 
     try:
-        tasks = pyproject['tool']['taskify']['tasks']
+        tasks = pyproject['tool']['taskipy']['tasks']
     except:
-        print('no tasks found. add a [tool.taskify.tasks] section to your pyproject.toml')
+        print('no tasks found. add a [tool.taskipy.tasks] section to your pyproject.toml')
         sys.exit(127)
 
     commands = []

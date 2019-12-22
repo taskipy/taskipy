@@ -2,7 +2,7 @@
 name = "taskipy"
 description = "tasks runner for python projects"
 
-[tool.taskify.tasks]
+[tool.taskipy.tasks]
 pre_hello = "echo 'pre_task'"
 hello = "echo 'hello'"
 post_hello = "echo 'post_task'"
