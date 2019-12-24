@@ -40,7 +40,7 @@ pre_publish = "./task test"
 publish = "poetry publish --build"
 
 pre_publish_patch = "./task test"
-bump_patch_version = "poetry version patch && git add . && git commit -m 'bumped minor version'"
+bump_patch_version = "poetry version patch && git add . && git commit -m 'bumped patch version' && git push"
 publish_patch = "./task bump_patch_version && poetry publish --build"
 
 [build-system]
