@@ -23,7 +23,7 @@ In addition, you can compose tasks and group them together, and also create depe
 This project is heavily inspired by npm's [run script command](https://docs.npmjs.com/cli/run-script).
 
 ## Requirements
-Python 3.5 or newer.
+Python 3.6 or newer.
 
 Your project directory should include a valid `pyproject.toml` file, as specified in [PEP-518](https://www.python.org/dev/peps/pep-0518/).
 
