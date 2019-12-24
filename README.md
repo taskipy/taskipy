@@ -2,8 +2,8 @@
 
 > the complementary task runner for python poetry projects
 
-![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)
-![travis](https://img.shields.io/travis/com/illBeRoy/taskipy?style=flat-square)
+[![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
+[![travis](https://img.shields.io/travis/illBeRoy/taskipy?style=flat-square)](https://travis-ci.org/illBeRoy/taskipy)
 
 ## General
 Every development pipeline has tasks, such as `test`, `lint` or `publish`. With taskipy, you can define those tasks in one file and run them with a simple command.
