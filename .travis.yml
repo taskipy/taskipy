@@ -1,0 +1,16 @@
+language: python
+os:
+    - windows
+    - osx
+    - linux
+python:
+    - "3.5"
+    - "3.6"
+    - "3.7"
+    - "3.8"
+pre_install:
+    - pip install poetry
+install:
+    - poetry install
+script:
+    - poetry run task test
