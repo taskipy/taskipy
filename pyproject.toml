@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "taskipy"
 description = "tasks runner for python projects"
-version = "1.0.2"
+version = "1.0.1"
 authors = ["Roy Sommer <roy@sommer.co.il>"]
 readme = "README.md"
 repository = "https://github.com/illBeRoy/taskipy"
@@ -39,7 +39,7 @@ lint_mypy = "mypy tests taskipy"
 pre_publish = "./task test"
 publish = "poetry publish --build"
 
-pre_publish_minor = "./task test"
+pre_publish_patch = "./task test"
 bump_patch_version = "poetry version patch && git add . && git commit -m 'bumped minor version'"
 publish_patch = "./task bump_patch_version && poetry publish --build"
 
