@@ -1,6 +1,6 @@
 <img src="./logo.svg" width="150" />
 
-> the complementary task runner for python
+> the complementary task runner for python poetry projects
 
 ## General
 Every development pipeline has tasks, such as `test`, `lint` or `publish`. With taskipy, you can define those tasks in one file and run them with a simple command.
@@ -12,12 +12,12 @@ python -m unittest tests/test_*.py
 
 You can create a task called `test` and simply run:
 ```bash
-task test
+poetry run task test
 ```
 
 In addition, you can compose tasks and group them together, and also create dependencies between them.
 
-This project is heavily inspired by [npm's run script command](https://docs.npmjs.com/cli/run-script).
+This project is heavily inspired by npm's [run script command](https://docs.npmjs.com/cli/run-script).
 
 ## Requirements
 Python 3.5 or newer.
@@ -26,13 +26,7 @@ Your project directory should include a valid `pyproject.toml` file, as specifie
 
 ## Usage
 ### Installation
-To install taskipy using pip, simply run:
-```bash
-pip install taskipy
-```
-
-#### With Poetry
-If you're using [poetry](https://python-poetry.org/), add taskipy as a dev dependency:
+To install taskipy as a dev dependency, simply run:
 ```bash
 poetry add --dev taskipy
 ```
@@ -52,13 +46,7 @@ lint = "pylint tests taskipy"
 ```
 
 ### Running Tasks
-In order to run a task, run the following command in your terminal (or virtualenv):
-```bash
-task test
-```
-
-#### With Poetry
-If you're using poetry, you can use its `run` function:
+In order to run a task, run the following command in your terminal:
 ```bash
 poetry run task test
 ```
@@ -115,3 +103,19 @@ lint = "pylint tests taskipy"
 ```
 
 The posttask hook looks for `post_<task_name>` task for a given `task_name`. It will run it after running the task itself. If the task failed, then taskipy will not run the posttask hook.
+
+### Using Taskipy Without Poetry
+Taskipy was created with poetry projects in mind, but actually only requires a valid `pyproject.toml` file in your project's directory. As a result, you can use it even eithout poetry:
+
+#### Installing With PIP
+Install taskipy on your machine or in your virtualenv using:
+```bash
+pip install taskipy
+```
+
+#### Running Tasks
+Head into your project's directory (don't forget to activate virtualenv if you're using one), and run the following command:
+```bash
+task TASK
+```
+Where `TASK` is the name of your task.
