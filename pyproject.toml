@@ -43,6 +43,10 @@ pre_publish_patch = "./task test"
 bump_patch_version = "poetry version patch && git add . && git commit -m 'bumped patch version' && git push"
 publish_patch = "./task bump_patch_version && poetry publish --build"
 
+pre_publish_minor = "./task test"
+bump_minor_version = "poetry version minor && git add . && git commit -m 'bumped minor version' && git push"
+publish_minor = "./task bump_minor_version && poetry publish --build"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
