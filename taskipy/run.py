@@ -5,7 +5,7 @@ import toml
 from os import path
 from typing import List
 
-def run_task(task_name: str, cwd=os.curdir):
+def run_task(task_name: str, args: List[str], cwd=os.curdir):
     def run_commands_and_bail_on_first_fail(cmds: List[str]) -> int:
         for cmd in cmds:
             p = subprocess.Popen(cmd, shell=True, cwd=cwd)
@@ -34,7 +34,8 @@ def run_task(task_name: str, cwd=os.curdir):
 
     try:
         task = tasks[task_name]
-        commands.append(task)
+        command_with_passed_args = ' '.join([task] + args)
+        commands.append(command_with_passed_args)
     except:
         print(f'could not find task "{task_name}""')
         sys.exit(127)
