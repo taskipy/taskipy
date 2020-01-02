@@ -54,6 +54,23 @@ In order to run a task, run the following command in your terminal:
 poetry run task test
 ```
 
+### Passing Command Line Args to Tasks
+If you want to pass command line arguments to tasks (positional or named), simply append them to the end of the task command.
+
+For example, running the above task like this:
+```bash
+poetry run task test -h
+```
+
+Is equivalent to running:
+```bash
+python -m unittest tests/test_*.py -h
+```
+
+And will show unittest's help instead of actually running it.
+
+> ⚠️ Note: if you are using pre \ post hooks, do notice that arguments are not passed to them, only to the task itself.
+
 ### Composing Tasks
 #### Grouping Subtasks Together
 Some tasks are composed of multiple subtasks. Instead of writing plain shell commands and stringing them together, you can break them down into multiple subtasks:

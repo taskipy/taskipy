@@ -1,6 +1,7 @@
 import os
 import unittest
 import subprocess
+import random
 from os import path
 from typing import List, Tuple
 from tests.utils.fixture import FixtureTempDir
@@ -13,10 +14,11 @@ class TaskipyTestCase(unittest.TestCase):
         for tmp_dir in self._tmp_dirs:
             tmp_dir.clean()
 
-    def run_task(self, task: str, cwd=os.curdir) -> Tuple[int, str, str]:
+    def run_task(self, task: str, args: List[str] = None, cwd=os.curdir) -> Tuple[int, str, str]:
         executable_path = path.abspath('task')
+        args = args or []
 
-        proc = subprocess.Popen([executable_path, task], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
+        proc = subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
         stdout, stderr = proc.communicate()
 
         return proc.returncode, str(stdout), str(stderr)
@@ -100,6 +102,48 @@ class TaskPrePostHooksTestCase(TaskipyTestCase):
 
         self.assertSubstr('post_task', stdout)
         self.assertEqual(exit_code, 1)
+
+class PassArgumentsTestCase(TaskipyTestCase):
+    def test_running_task_with_positional_arguments(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        some_random_number = random.randint(1, 1000)
+        exit_code, stdout, _ = self.run_task('echo_number', args=[f'{some_random_number}'], cwd=cwd)
+
+        self.assertSubstr(f'the number is {some_random_number}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_with_named_arguments(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        exit_code, stdout, _ = self.run_task('echo_named', args=['-h'], cwd=cwd)
+
+        self.assertSubstr(f'got a named argument -h', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_with_multiple_arguments(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        args = ['one', 'two', 'three', 'four', 'five']
+        exit_code, stdout, _ = self.run_task('echo_args_count', args=args, cwd=cwd)
+
+        self.assertSubstr(f'the argument count is 5', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_arguments_not_passed_to_pre_hook(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        some_random_number = random.randint(1, 1000)
+        exit_code, stdout, _ = self.run_task('echo_on_prehook', args=[f'{some_random_number}'], cwd=cwd)
+
+        self.assertSubstr(f'the number in prehook is', stdout)
+        self.assertNotSubstr(f'the number in prehook is {some_random_number}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_arguments_not_passed_to_post_hook(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        some_random_number = random.randint(1, 1000)
+        exit_code, stdout, _ = self.run_task('echo_on_posthook', args=[f'{some_random_number}'], cwd=cwd)
+
+        self.assertSubstr(f'the number in posthook is', stdout)
+        self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
+        self.assertEqual(exit_code, 0)
 
 class TaskRunFailTestCase(TaskipyTestCase):
     def test_exiting_with_code_127_and_printing_if_task_not_found(self):

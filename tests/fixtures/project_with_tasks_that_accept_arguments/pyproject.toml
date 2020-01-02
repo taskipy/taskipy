@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+echo_number = "echo the number is "
+echo_named = "echo got a named argument "
+echo_args_count = "bash count.sh"
+
+pre_echo_on_prehook = "echo the number in prehook is "
+echo_on_prehook = "echo ok"
+
+echo_on_posthook = "echo ok"
+post_echo_on_posthook = "echo the number in posthook is "
