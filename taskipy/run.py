@@ -20,9 +20,9 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     except FileNotFoundError:
         print('no pyproject.toml file found in this directory')
         sys.exit(1)
-    except Exception:
+    except Exception:  # pylint: disable=W0703
         print('pyproject.toml file is malformed and could not be read')
-        # TODO print exception details
+        # should print exception details
         sys.exit(1)
 
     try:
@@ -38,7 +38,7 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     except KeyError:
         print(f'could not find task "{task_name}""')
         sys.exit(127)
-    
+
     command_with_passed_args = ' '.join([task] + args)
     commands.append(command_with_passed_args)
 
