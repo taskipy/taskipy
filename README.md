@@ -4,6 +4,9 @@
 
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![travis](https://img.shields.io/travis/illBeRoy/taskipy?style=flat-square)](https://travis-ci.org/illBeRoy/taskipy)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## General
 Every development pipeline has tasks, such as `test`, `lint` or `publish`. With taskipy, you can define those tasks in one file and run them with a simple command.
@@ -139,3 +142,22 @@ Head into your project's directory (don't forget to activate virtualenv if you'r
 task TASK
 ```
 Where `TASK` is the name of your task.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://twitter.com/merwok_"><img src="https://avatars0.githubusercontent.com/u/635179?v=4" width="100px;" alt=""/><br /><sub><b>Éric Araujo</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=merwok" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
