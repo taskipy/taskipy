@@ -20,13 +20,14 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     except FileNotFoundError:
         print('no pyproject.toml file found in this directory')
         sys.exit(1)
-    except:
+    except toml.TomlDecodeError:
         print('pyproject.toml file is malformed and could not be read')
+        # should print exception details
         sys.exit(1)
 
     try:
         tasks = pyproject['tool']['taskipy']['tasks']
-    except:
+    except KeyError:
         print('no tasks found. add a [tool.taskipy.tasks] section to your pyproject.toml')
         sys.exit(127)
 
@@ -34,22 +35,23 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
 
     try:
         task = tasks[task_name]
-        command_with_passed_args = ' '.join([task] + args)
-        commands.append(command_with_passed_args)
-    except:
+    except KeyError:
         print(f'could not find task "{task_name}""')
         sys.exit(127)
+
+    command_with_passed_args = ' '.join([task] + args)
+    commands.append(command_with_passed_args)
 
     try:
         pre_task = tasks[f'pre_{task_name}']
         commands.insert(0, pre_task)
-    except:
+    except KeyError:
         pass
 
     try:
         post_task = tasks[f'post_{task_name}']
         commands.append(post_task)
-    except:
+    except KeyError:
         pass
 
     exit_code = run_commands_and_bail_on_first_fail(commands)
