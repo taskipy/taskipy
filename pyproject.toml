@@ -36,16 +36,16 @@ lint = "./task lint_pylint && ./task lint_mypy"
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
 
-pre_publish = "./task test"
 publish = "poetry publish --build"
+post_publish = "./task make_release_commit"
 
-commit_release = "python ./hooks/tag_release.py"
+make_release_commit = "python ./hooks/make_release_commit.py"
 
 pre_publish_patch = "./task test"
-publish_patch = "poetry version patch && commit_release && poetry publish --build"
+publish_patch = "poetry version patch && ./task publish"
 
 pre_publish_minor = "./task test"
-publish_minor = "poetry version minor && commit_release && poetry publish --build"
+publish_minor = "poetry version minor && ./task publish"
 
 [build-system]
 requires = ["poetry>=0.12"]
