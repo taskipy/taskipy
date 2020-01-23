@@ -39,7 +39,7 @@ lint_mypy = "mypy tests taskipy"
 publish = "poetry publish --build"
 post_publish = "./task make_release_commit"
 
-make_release_commit = "python ./hooks/make_release_commit.py"
+make_release_commit = "python ./.hooks/make_release_commit.py"
 
 pre_publish_patch = "./task test"
 publish_patch = "poetry version patch && ./task publish"
