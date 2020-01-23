@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "merwok",
+      "name": "Éric Araujo",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/635179?v=4",
+      "profile": "https://twitter.com/merwok_",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "taskipy",
+  "projectOwner": "illBeRoy",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
