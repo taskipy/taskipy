@@ -20,7 +20,7 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     except FileNotFoundError:
         print('no pyproject.toml file found in this directory')
         sys.exit(1)
-    except Exception:  # pylint: disable=W0703
+    except toml.TomlDecodeError:
         print('pyproject.toml file is malformed and could not be read')
         # should print exception details
         sys.exit(1)
