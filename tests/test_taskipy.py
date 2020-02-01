@@ -190,8 +190,11 @@ class InterruptingTaskTestCase(TaskipyTestCase):
 
     def interrupt_task(self, process: subprocess.Popen):
         psutil_process_wrapper = psutil.Process(process.pid)
+
         processes = psutil_process_wrapper.children(recursive=True)
-        processes[0].send_signal(signal.SIGINT)
+
+        innermost_process = next(filter(lambda p: p.name().startswith('python'), processes))
+        innermost_process.send_signal(signal.SIGINT)
 
     def test_handling_sigint_according_to_subprocess_if_it_handles_it_gracefully(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_that_handle_interrupts')
@@ -214,4 +217,4 @@ class InterruptingTaskTestCase(TaskipyTestCase):
 
         exit_code = process.wait()
 
-        self.assertEqual(exit_code, 254)
+        self.assertEqual(exit_code, 130)
