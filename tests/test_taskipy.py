@@ -2,6 +2,10 @@ import os
 import unittest
 import subprocess
 import random
+import time
+import signal
+import psutil # type: ignore
+import warnings
 from os import path
 from typing import List, Tuple
 from tests.utils.fixture import FixtureTempDir
@@ -15,13 +19,16 @@ class TaskipyTestCase(unittest.TestCase):
             tmp_dir.clean()
 
     def run_task(self, task: str, args: List[str] = None, cwd=os.curdir) -> Tuple[int, str, str]:
-        executable_path = path.abspath('task')
-        args = args or []
-
-        proc = subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
+        proc = self.start_taskipy_process(task, args=args, cwd=cwd)
         stdout, stderr = proc.communicate()
 
         return proc.returncode, str(stdout), str(stderr)
+
+    def start_taskipy_process(self, task: str, args: List[str] = None, cwd=os.curdir) -> subprocess.Popen:
+        executable_path = path.abspath('task')
+        args = args or []
+
+        return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
     def create_test_dir_from_fixture(self, fixture_name: str):
         tmp_dir = FixtureTempDir(path.join('tests', 'fixtures', fixture_name))
@@ -173,3 +180,38 @@ class TaskRunFailTestCase(TaskipyTestCase):
 
         self.assertSubstr('pyproject.toml file is malformed and could not be read', stdout)
         self.assertEqual(exit_code, 1)
+
+class InterruptingTaskTestCase(TaskipyTestCase):
+    def setUp(self):
+        super().setUp()
+
+        # suppress resource warnings, as they are false positives caused by psutil
+        warnings.simplefilter('ignore', category=ResourceWarning)
+
+    def interrupt_task(self, process: subprocess.Popen):
+        psutil_process_wrapper = psutil.Process(process.pid)
+        processes = psutil_process_wrapper.children(recursive=True)
+        processes[0].send_signal(signal.SIGINT)
+
+    def test_handling_sigint_according_to_subprocess_if_it_handles_it_gracefully(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_handle_interrupts')
+        process = self.start_taskipy_process('run_loop_with_interrupt_handling', cwd=cwd)
+
+        time.sleep(.2)
+
+        self.interrupt_task(process)
+        exit_code = process.wait()
+
+        self.assertEqual(exit_code, 0)
+
+    def test_handling_sigint_according_to_subprocess_if_it_does_not_handle_it_gracefully(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_handle_interrupts')
+        process = self.start_taskipy_process('run_loop_without_interrupt_handling', cwd=cwd)
+
+        time.sleep(.2)
+
+        self.interrupt_task(process)
+
+        exit_code = process.wait()
+
+        self.assertEqual(exit_code, 254)

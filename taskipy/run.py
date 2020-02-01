@@ -9,7 +9,12 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     def run_commands_and_bail_on_first_fail(cmds: List[str]) -> int:
         for cmd in cmds:
             p = subprocess.Popen(cmd, shell=True, cwd=cwd)
-            p.wait()
+
+            try:
+                p.wait()
+            except KeyboardInterrupt:
+                pass
+
             if p.returncode != 0:
                 return p.returncode
 
@@ -22,7 +27,6 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
         sys.exit(1)
     except toml.TomlDecodeError:
         print('pyproject.toml file is malformed and could not be read')
-        # should print exception details
         sys.exit(1)
 
     try:
