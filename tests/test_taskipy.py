@@ -245,8 +245,8 @@ class CustomRunnerTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         _, _, stderr = self.run_task('print_with_python', cwd=cwd)
 
-        time_cmd_output_format = r'.*real.*user.*sys'
-        self.assertRegex(stderr, time_cmd_output_format)
+        time_cmd_output_format = 'user'
+        self.assertSubstr(time_cmd_output_format, stderr)
 
     def test_running_command_with_custom_runner_with_trailing_space(self):
         py_project_toml = '''
@@ -259,8 +259,8 @@ class CustomRunnerTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         _, _, stderr = self.run_task('print_with_python', cwd=cwd)
 
-        time_cmd_output_format = r'.*real.*user.*sys'
-        self.assertRegex(stderr, time_cmd_output_format)
+        time_cmd_output_format = 'user'
+        self.assertSubstr(time_cmd_output_format, stderr)
 
     def test_running_command_with_custom_runner_fails_if_custom_runner_is_not_string(self):
         py_project_toml = '''
