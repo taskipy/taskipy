@@ -8,11 +8,12 @@ import psutil # type: ignore
 import warnings
 from os import path
 from typing import List, Tuple
-from tests.utils.fixture import FixtureTempDir
+from tests.utils.project import TempProjectDir, GenerateProjectFromFixture, GenerateProjectWithPyProjectToml
+
 
 class TaskipyTestCase(unittest.TestCase):
     def setUp(self):
-        self._tmp_dirs: List[FixtureTempDir] = []
+        self._tmp_dirs: List[TempProjectDir] = []
 
     def tearDown(self):
         for tmp_dir in self._tmp_dirs:
@@ -31,7 +32,14 @@ class TaskipyTestCase(unittest.TestCase):
         return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
     def create_test_dir_from_fixture(self, fixture_name: str):
-        tmp_dir = FixtureTempDir(path.join('tests', 'fixtures', fixture_name))
+        project_generator = GenerateProjectFromFixture(path.join('tests', 'fixtures', fixture_name))
+        tmp_dir = TempProjectDir(project_generator)
+        self._tmp_dirs.append(tmp_dir)
+        return tmp_dir.path
+
+    def create_test_dir_with_py_project_toml(self, py_project_toml: str):
+        project_generator = GenerateProjectWithPyProjectToml(py_project_toml)
+        tmp_dir = TempProjectDir(project_generator)
         self._tmp_dirs.append(tmp_dir)
         return tmp_dir.path
 
@@ -53,6 +61,7 @@ class TaskipyTestCase(unittest.TestCase):
             self.assertLess(full_string.find(substr_a),
                             full_string.find(substr_b),
                             msg=f'Expected \n  "{substr_a}"\nto appear before\n  "{substr_b}"\nin\n  "{full_string}"')
+
 
 class RunTaskTestCase(TaskipyTestCase):
     def test_running_task(self):
@@ -82,6 +91,7 @@ class RunTaskTestCase(TaskipyTestCase):
 
         self.assertSubstr('hello stderr', stderr)
 
+
 class TaskPrePostHooksTestCase(TaskipyTestCase):
     def test_running_pre_task_hook(self):
         cwd = self.create_test_dir_from_fixture('project_with_pre_post_task_hooks')
@@ -109,6 +119,7 @@ class TaskPrePostHooksTestCase(TaskipyTestCase):
 
         self.assertSubstr('post_task', stdout)
         self.assertEqual(exit_code, 1)
+
 
 class PassArgumentsTestCase(TaskipyTestCase):
     def test_running_task_with_positional_arguments(self):
@@ -152,6 +163,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
         self.assertEqual(exit_code, 0)
 
+
 class TaskRunFailTestCase(TaskipyTestCase):
     def test_exiting_with_code_127_and_printing_if_task_not_found(self):
         cwd = self.create_test_dir_from_fixture('project_with_pyproject_and_tasks')
@@ -180,6 +192,7 @@ class TaskRunFailTestCase(TaskipyTestCase):
 
         self.assertSubstr('pyproject.toml file is malformed and could not be read', stdout)
         self.assertEqual(exit_code, 1)
+
 
 class InterruptingTaskTestCase(TaskipyTestCase):
     def setUp(self):
@@ -218,3 +231,47 @@ class InterruptingTaskTestCase(TaskipyTestCase):
         exit_code = process.wait()
 
         self.assertEqual(exit_code, 130)
+
+
+class CustomRunnerTestCase(TaskipyTestCase):
+    def test_running_command_with_custom_runner(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            runner = "time"
+
+            [tool.taskipy.tasks]
+            print_with_python = "python -c 'print(1337)'"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        _, _, stderr = self.run_task('print_with_python', cwd=cwd)
+
+        time_cmd_output_format = r'.*real.*user.*sys'
+        self.assertRegex(stderr, time_cmd_output_format)
+
+    def test_running_command_with_custom_runner_with_trailing_space(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            runner = "time "
+
+            [tool.taskipy.tasks]
+            print_with_python = "python -c 'print(1337)'"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        _, _, stderr = self.run_task('print_with_python', cwd=cwd)
+
+        time_cmd_output_format = r'.*real.*user.*sys'
+        self.assertRegex(stderr, time_cmd_output_format)
+
+    def test_running_command_with_custom_runner_fails_if_custom_runner_is_not_string(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            runner = 55
+
+            [tool.taskipy.tasks]
+            print_with_python = "python -c 'print(1337)'"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('print_with_python', cwd=cwd)
+
+        self.assertSubstr('invalid value: runner is not a string. please check [tool.taskipy.settings.runner]', stdout)
+        self.assertEqual(exit_code, 1)
