@@ -5,9 +5,9 @@ You can go over the use cases list and try to find the specific use case which y
 
 ## Use Cases
 For each of the use cases below, click on the arrow in order to get to the relevant feature.
-1. I want to load environment variables before every task ([⏩](custom-runners))
-2. I want to run all tasks in a specific virtualenv ([⏩](custom-runners))
-3. I want to run all tasks in a specific shell \ ssh ([⏩](custom-runners))
+1. I want to load environment variables before every task ([⏩](#custom-runners))
+2. I want to run all tasks in a specific virtualenv ([⏩](#custom-runners))
+3. I want to run all tasks in a specific shell \ ssh ([⏩](#custom-runners))
 
 ## Features
 ### Custom Runners
