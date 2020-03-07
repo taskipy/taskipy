@@ -3,7 +3,7 @@
 > the complementary task runner for python poetry projects
 
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
-[![travis](https://img.shields.io/travis/illBeRoy/taskipy?style=flat-square)](https://travis-ci.org/illBeRoy/taskipy)
+[![travis](https://img.shields.io/travis/illBeRoy/taskipy/master?style=flat-square)](https://travis-ci.org/illBeRoy/taskipy)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
