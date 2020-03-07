@@ -3,7 +3,9 @@ disable=
       C0114,
       R0201,
       W0702,
-      C0411
+      C0411,
+      R0903,
+      R0915
 
 [FORMAT]
 max-line-length=1000

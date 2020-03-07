@@ -6,8 +6,11 @@ from os import path
 from typing import List
 
 def run_task(task_name: str, args: List[str], cwd=os.curdir):
-    def run_commands_and_bail_on_first_fail(cmds: List[str]) -> int:
+    def run_commands_and_bail_on_first_fail(cmds: List[str], runner: str = None) -> int:
         for cmd in cmds:
+            if runner is not None:
+                cmd = f'{runner} {cmd}'
+
             p = subprocess.Popen(cmd, shell=True, cwd=cwd)
 
             try:
@@ -58,5 +61,13 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
     except KeyError:
         pass
 
-    exit_code = run_commands_and_bail_on_first_fail(commands)
+    try:
+        runner = pyproject['tool']['taskipy']['settings']['runner'].strip()
+    except KeyError:
+        runner = None
+    except AttributeError:
+        print('invalid value: runner is not a string. please check [tool.taskipy.settings.runner]')
+        sys.exit(1)
+
+    exit_code = run_commands_and_bail_on_first_fail(commands, runner=runner)
     sys.exit(exit_code)
