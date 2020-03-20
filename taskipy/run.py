@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import toml
+import shlex
 from os import path
 from typing import List
 
@@ -46,7 +47,7 @@ def run_task(task_name: str, args: List[str], cwd=os.curdir):
         print(f'could not find task "{task_name}""')
         sys.exit(127)
 
-    command_with_passed_args = ' '.join([task] + args)
+    command_with_passed_args = ' '.join([task] + [shlex.quote(arg) for arg in args])
     commands.append(command_with_passed_args)
 
     try:

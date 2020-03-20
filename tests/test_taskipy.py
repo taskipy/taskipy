@@ -145,6 +145,15 @@ class PassArgumentsTestCase(TaskipyTestCase):
         self.assertSubstr(f'the argument count is 5', stdout)
         self.assertEqual(exit_code, 0)
 
+    def test_running_task_with_arguments_with_spaces(self):
+        cwd = self.create_test_dir_from_fixture('project_with_task_that_checks_args_passed_with_spaces')
+        name = 'Roy Sommer'
+        age = random.randrange(1, 100)
+        exit_code, stdout, _ = self.run_task('identify', args=['--full-name', name, '--age', f'{age}'], cwd=cwd)
+
+        self.assertSubstr(f'name: {name} age: {age}', stdout)
+        self.assertEqual(exit_code, 0)
+
     def test_running_task_arguments_not_passed_to_pre_hook(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
         some_random_number = random.randint(1, 1000)
