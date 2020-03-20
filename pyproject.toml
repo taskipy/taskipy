@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "taskipy"
 description = "tasks runner for python projects"
-version = "1.2.0"
+version = "1.2.1"
 authors = ["Roy Sommer <roy@sommer.co.il>"]
 readme = "README.md"
 repository = "https://github.com/illBeRoy/taskipy"
