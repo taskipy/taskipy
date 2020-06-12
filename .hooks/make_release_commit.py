@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 import toml
 import subprocess
-import os
-from os import path
+from pathlib import Path
 
 def create_release_commit():
-    pyproject = toml.load(path.join(os.curdir, 'pyproject.toml'))
+    cwd = Path.cwd()
+    pyproject = toml.load(cwd / 'pyproject.toml')
     version = pyproject['tool']['poetry']['version']
 
     p = subprocess.Popen(f'git add . && git commit -m "Release version {version}" && git tag -a "{version}" -m "Release version {version}" && git push && git push --tags',
                          shell=True,
-                         cwd=os.curdir)
+                         cwd=cwd)
 
     p.wait()
 
