@@ -1,14 +1,20 @@
 import os
-import unittest
-import subprocess
 import random
-import time
 import signal
-import psutil # type: ignore
+import subprocess
+import time
+import unittest
 import warnings
 from os import path
 from typing import List, Tuple
-from tests.utils.project import TempProjectDir, GenerateProjectFromFixture, GenerateProjectWithPyProjectToml
+
+import psutil  # type: ignore
+
+from tests.utils.project import (
+    GenerateProjectFromFixture,
+    GenerateProjectWithPyProjectToml,
+    TempProjectDir
+)
 
 
 class TaskipyTestCase(unittest.TestCase):
@@ -134,7 +140,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
         exit_code, stdout, _ = self.run_task('echo_named', args=['-h'], cwd=cwd)
 
-        self.assertSubstr(f'got a named argument -h', stdout)
+        self.assertSubstr('got a named argument -h', stdout)
         self.assertEqual(exit_code, 0)
 
     def test_running_task_with_multiple_arguments(self):
@@ -142,7 +148,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         args = ['one', 'two', 'three', 'four', 'five']
         exit_code, stdout, _ = self.run_task('echo_args_count', args=args, cwd=cwd)
 
-        self.assertSubstr(f'the argument count is 5', stdout)
+        self.assertSubstr('the argument count is 5', stdout)
         self.assertEqual(exit_code, 0)
 
     def test_running_task_with_arguments_with_spaces(self):
@@ -159,7 +165,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         some_random_number = random.randint(1, 1000)
         exit_code, stdout, _ = self.run_task('echo_on_prehook', args=[f'{some_random_number}'], cwd=cwd)
 
-        self.assertSubstr(f'the number in prehook is', stdout)
+        self.assertSubstr('the number in prehook is', stdout)
         self.assertNotSubstr(f'the number in prehook is {some_random_number}', stdout)
         self.assertEqual(exit_code, 0)
 
@@ -168,7 +174,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         some_random_number = random.randint(1, 1000)
         exit_code, stdout, _ = self.run_task('echo_on_posthook', args=[f'{some_random_number}'], cwd=cwd)
 
-        self.assertSubstr(f'the number in posthook is', stdout)
+        self.assertSubstr('the number in posthook is', stdout)
         self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
         self.assertEqual(exit_code, 0)
 
