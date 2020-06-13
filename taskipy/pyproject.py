@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, MutableMapping
+from typing import Any, MutableMapping, Union
 
 import toml
 
@@ -12,9 +12,8 @@ from taskipy.exceptions import (
 
 
 class PyProject:
-    def __init__(self, file_name: str = "pyproject.toml", directory: Path = Path.cwd()):
-        self.__path = Path(directory / file_name).resolve()
-        self.__items = self.__load_toml_file()
+    def __init__(self, file_path: Union[str, Path]):
+        self.__items = PyProject.__load_toml_file(file_path)
 
     @property
     def tasks(self) -> dict:
@@ -30,9 +29,13 @@ class PyProject:
         except KeyError:
             raise MissingTaskipySettingsSectionError()
 
-    def __load_toml_file(self) -> MutableMapping[str, Any]:
+    @staticmethod
+    def __load_toml_file(file_path: Union[str, Path]) -> MutableMapping[str, Any]:
         try:
-            return toml.load(self.__path)
+            if isinstance(file_path, str):
+                file_path = Path(file_path).resolve()
+
+            return toml.load(file_path)
         except FileNotFoundError:
             raise MissingPyProjectFileError()
         except toml.TomlDecodeError:
