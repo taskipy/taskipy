@@ -1,34 +1,26 @@
-import shlex
 import subprocess
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 from taskipy.task import Task
+from taskipy.pyproject import PyProject
 
 
 class TaskRunner:
-    def __init__(self, task_name: str, args: List[str]):
-        self.task = Task(task_name)
-        self.commands = []
-        self.commands.append(
-            " ".join([self.task.command] + [shlex.quote(arg) for arg in args])
-        )
+    def __init__(self, pyproject_path: Union[str, Path]):
+        self.__pyproject_path = pyproject_path
+        self.__project = PyProject(pyproject_path)
 
-    def run(self) -> int:
-        if self.task.pre_task:
-            self.commands.insert(0, self.task.pre_task)
+    def run(self, task_name: str, args: List[str]) -> int:
+        task = Task(task_name, args, self.__project)
 
-        if self.task.post_task:
-            self.commands.append(self.task.post_task)
+        for command in task.commands:
+            if task.runner is not None:
+                command = f"{task.runner} {command}"
 
-        return self.__run_commands_and_bail_on_first_fail()
-
-    def __run_commands_and_bail_on_first_fail(self) -> int:
-        for cmd in self.commands:
-            if self.task.runner is not None:
-                cmd = f"{self.task.runner} {cmd}"
-
-            process = subprocess.Popen(cmd, shell=True, cwd=Path.cwd())
+            process = subprocess.Popen(
+                command, shell=True, cwd=Path(self.__pyproject_path).parent
+            )
 
             try:
                 process.wait()
