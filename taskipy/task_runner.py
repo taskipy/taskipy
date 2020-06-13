@@ -16,7 +16,7 @@ class TaskRunner:
 
         for command in task.commands:
             if task.runner is not None:
-                command = f"{task.runner} {command}"
+                command = f'{task.runner} {command}'
 
             process = subprocess.Popen(
                 command, shell=True, cwd=Path(self.__pyproject_path).parent

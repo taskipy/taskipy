@@ -21,14 +21,14 @@ class Task:
     @property
     def pre_task(self) -> Optional[str]:
         try:
-            return self.project.tasks[f"pre_{self.name}"]
+            return self.project.tasks[f'pre_{self.name}']
         except KeyError:
             return None
 
     @property
     def post_task(self) -> Optional[str]:
         try:
-            return self.project.tasks[f"post_{self.name}"]
+            return self.project.tasks[f'post_{self.name}']
         except KeyError:
             return None
 
@@ -38,7 +38,7 @@ class Task:
             command = self.project.tasks[self.name]
             commands = []
             commands.append(
-                " ".join([command] + [shlex.quote(arg) for arg in self.args])
+                ' '.join([command] + [shlex.quote(arg) for arg in self.args])
             )
 
             if self.pre_task:
@@ -54,7 +54,7 @@ class Task:
     @property
     def runner(self) -> Optional[str]:
         try:
-            runner = self.project.settings["runner"]
+            runner = self.project.settings['runner']
 
             if not isinstance(runner, str):
                 raise InvalidRunnerTypeError()

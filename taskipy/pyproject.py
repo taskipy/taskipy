@@ -18,14 +18,14 @@ class PyProject:
     @property
     def tasks(self) -> dict:
         try:
-            return self.__items["tool"]["taskipy"]["tasks"]
+            return self.__items['tool']['taskipy']['tasks']
         except KeyError:
             raise MissingTaskipyTasksSectionError()
 
     @property
     def settings(self) -> dict:
         try:
-            return self.__items["tool"]["taskipy"]["settings"]
+            return self.__items['tool']['taskipy']['settings']
         except KeyError:
             raise MissingTaskipySettingsSectionError()
 
