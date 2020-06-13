@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+from pathlib import Path
 
 from taskipy.exceptions import TaskipyError
 from taskipy.task_runner import TaskRunner
@@ -18,7 +19,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        exit_code = TaskRunner(args.name, args.args).run()
+        exit_code = TaskRunner(Path.cwd() / "pyproject.toml").run(args.name, args.args)
         sys.exit(exit_code)
     except TaskipyError as e:
         print(e)
