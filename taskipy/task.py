@@ -38,8 +38,11 @@ class Task:
     @property
     def runner(self) -> Optional[str]:
         try:
-            return self.project.settings["runner"].strip()
+            runner = self.project.settings["runner"]
+
+            if not isinstance(runner, str):
+                raise InvalidRunnerTypeError()
+
+            return runner.strip()
         except (KeyError, MissingTaskipySettingsSectionError):
             return None
-        except AttributeError:
-            raise InvalidRunnerTypeError()
