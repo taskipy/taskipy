@@ -2,14 +2,7 @@
 import argparse
 import sys
 
-from taskipy.exceptions import (
-    InvalidRunnerTypeError,
-    MalformedPyProjectError,
-    MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError,
-    MissingTaskipySettingsSectionError,
-    TaskNotFoundError,
-)
+from taskipy.exceptions import TaskipyError
 from taskipy.task_runner import TaskRunner
 
 
@@ -27,12 +20,9 @@ def main():
     try:
         exit_code = TaskRunner(args.name, args.args).run()
         sys.exit(exit_code)
-    except (TaskNotFoundError, MissingTaskipyTasksSectionError, MissingTaskipySettingsSectionError) as e:
+    except TaskipyError as e:
         print(e)
-        sys.exit(127)
-    except (InvalidRunnerTypeError, MalformedPyProjectError, MissingPyProjectFileError) as e:
-        print(e)
-        sys.exit(1)
+        sys.exit(e.exit_code)
     except Exception as e:
         print(e)
         sys.exit(1)
