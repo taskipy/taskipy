@@ -22,9 +22,6 @@ test = "dotenv run unittest ."
 
 But if we want all of our tasks to use the same runner (such as `dotenv` in the above example) we would have to manually write all of them as such:
 ```toml
-[tool.taskipy.settings]
-runner = "dotenv run"
-
 [tool.taskipy.tasks]
 test = "dotenv run unittest ."
 lint = "dotenv run pylint taskipy"
