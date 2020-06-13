@@ -1,4 +1,5 @@
-from typing import Optional
+import shlex
+from typing import Optional, List
 
 from taskipy.exceptions import (
     InvalidRunnerTypeError,
@@ -9,14 +10,10 @@ from taskipy.pyproject import PyProject
 
 
 class Task:
-    def __init__(self, task_name: str):
-        self.project = PyProject()
+    def __init__(self, task_name: str, args: List[str], project: PyProject):
+        self.project = project
         self.name = task_name
-
-        try:
-            self.command = self.project.tasks[task_name]
-        except KeyError:
-            raise TaskNotFoundError(self.name)
+        self.args = args
 
     def __str__(self) -> str:
         return self.name
@@ -34,6 +31,25 @@ class Task:
             return self.project.tasks[f"post_{self.name}"]
         except KeyError:
             return None
+
+    @property
+    def commands(self) -> List[str]:
+        try:
+            command = self.project.tasks[self.name]
+            commands = []
+            commands.append(
+                " ".join([command] + [shlex.quote(arg) for arg in self.args])
+            )
+
+            if self.pre_task:
+                commands.insert(0, self.pre_task)
+
+            if self.post_task:
+                commands.append(self.post_task)
+
+            return commands
+        except KeyError:
+            raise TaskNotFoundError(self.name)
 
     @property
     def runner(self) -> Optional[str]:
