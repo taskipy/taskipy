@@ -6,7 +6,8 @@ import toml
 from taskipy.exceptions import (
     MalformedPyProjectError,
     MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError
+    MissingTaskipyTasksSectionError,
+    MissingTaskipySettingsSectionError
 )
 
 
@@ -24,7 +25,10 @@ class PyProject:
 
     @property
     def settings(self) -> dict:
-        return self.items["tool"]["taskipy"]["settings"]
+        try:
+            return self.items["tool"]["taskipy"]["settings"]
+        except KeyError:
+            raise MissingTaskipySettingsSectionError()
 
     def __load_toml_file(self) -> MutableMapping[str, Any]:
         try:

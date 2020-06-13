@@ -18,6 +18,13 @@ class InvalidRunnerTypeError(TaskipyError):
         )
 
 
+class MissingTaskipySettingsSectionError(TaskipyError):
+    def __str__(self):
+        return (
+            "no settings found. add a [tools.taskipy.settings]"
+            "section to your pyproject.toml"
+        )
+
 class MissingTaskipyTasksSectionError(TaskipyError):
     def __str__(self):
         return (

@@ -7,6 +7,7 @@ from taskipy.exceptions import (
     MalformedPyProjectError,
     MissingPyProjectFileError,
     MissingTaskipyTasksSectionError,
+    MissingTaskipySettingsSectionError,
     TaskNotFoundError,
 )
 from taskipy.task_runner import TaskRunner
@@ -26,7 +27,7 @@ def main():
     try:
         exit_code = TaskRunner(args.name, args.args).run()
         sys.exit(exit_code)
-    except (TaskNotFoundError, MissingTaskipyTasksSectionError) as e:
+    except (TaskNotFoundError, MissingTaskipyTasksSectionError, MissingTaskipySettingsSectionError) as e:
         print(e)
         sys.exit(127)
     except (InvalidRunnerTypeError, MalformedPyProjectError, MissingPyProjectFileError) as e:

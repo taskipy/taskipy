@@ -1,6 +1,10 @@
 from typing import Optional
 
-from taskipy.exceptions import InvalidRunnerTypeError, TaskNotFoundError
+from taskipy.exceptions import (
+    InvalidRunnerTypeError,
+    TaskNotFoundError,
+    MissingTaskipySettingsSectionError
+)
 from taskipy.pyproject import PyProject
 
 
@@ -35,7 +39,7 @@ class Task:
     def runner(self) -> Optional[str]:
         try:
             return self.project.settings["runner"].strip()
-        except KeyError:
+        except (KeyError, MissingTaskipySettingsSectionError):
             return None
         except AttributeError:
             raise InvalidRunnerTypeError()
