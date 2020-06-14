@@ -20,17 +20,11 @@ class Task:
 
     @property
     def pre_task(self) -> Optional[str]:
-        try:
-            return self.project.tasks[f'pre_{self.name}']
-        except KeyError:
-            return None
+        return self.__find_hooks('pre')
 
     @property
     def post_task(self) -> Optional[str]:
-        try:
-            return self.project.tasks[f'post_{self.name}']
-        except KeyError:
-            return None
+        return self.__find_hooks('post')
 
     @property
     def commands(self) -> List[str]:
@@ -61,4 +55,10 @@ class Task:
 
             return runner.strip()
         except (KeyError, MissingTaskipySettingsSectionError):
+            return None
+
+    def __find_hooks(self, hook_type: str) -> Optional[str]:
+        try:
+            return self.project.tasks[f'{hook_type}_{self.name}']
+        except KeyError:
             return None
