@@ -22,6 +22,7 @@ task = 'taskipy.cli:main'
 [tool.poetry.dependencies]
 python = "^3.6"
 toml = "^0.10.0"
+psutil = "^5.7.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.4.4"

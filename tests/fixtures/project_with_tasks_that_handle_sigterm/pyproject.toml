@@ -1,0 +1,6 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+run_loop_with_sigterm_handling = "python3 loop_with_sigterm_handler.py"

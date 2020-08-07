@@ -4,11 +4,8 @@ import time
 
 
 def main():
-    try:
-        while True:
-            time.sleep(0.1)
-    except KeyboardInterrupt:
-        print('failing gracefully...')
+    while True:
+        time.sleep(0.1)
 
 
 def sigterm_handler(sig, frame):

@@ -247,6 +247,20 @@ class InterruptingTaskTestCase(TaskipyTestCase):
 
         self.assertEqual(exit_code, 130)
 
+    def test_sigterm_should_be_sent_to_subprocess(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_handle_sigterm')
+        process = self.start_taskipy_process('run_loop_with_sigterm_handling', cwd=cwd)
+
+        time.sleep(.2)
+
+        process.send_signal(signal.SIGTERM)
+
+        exit_code = process.wait()
+        stdout, _ = process.communicate()
+
+        self.assertEqual(exit_code, 123)
+        self.assertSubstr('sigterm', str(stdout))
+
 
 class CustomRunnerTestCase(TaskipyTestCase):
     def test_running_command_with_custom_runner(self):
