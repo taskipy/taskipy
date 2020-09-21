@@ -17,9 +17,13 @@ def main():
         'args', nargs=argparse.REMAINDER, help='arguments to pass to the task'
     )
     args = parser.parse_args()
-
     try:
-        exit_code = TaskRunner(Path.cwd() / 'pyproject.toml').run(args.name, args.args)
+        runner = TaskRunner(Path.cwd() / 'pyproject.toml')
+        if args.name == 'list':
+            for k, v in runner.project.tasks.items():
+                print(f'{k:<20}{v}')
+            sys.exit(1)
+        exit_code = runner.run(args.name, args.args)
         sys.exit(exit_code)
     except TaskipyError as e:
         print(e)

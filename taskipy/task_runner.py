@@ -13,10 +13,10 @@ from taskipy.task import Task
 class TaskRunner:
     def __init__(self, pyproject_path: Union[str, Path]):
         self.__pyproject_path = pyproject_path
-        self.__project = PyProject(pyproject_path)
+        self.project = PyProject(pyproject_path)
 
     def run(self, task_name: str, args: List[str]) -> int:
-        task = Task(task_name, args, self.__project)
+        task = Task(task_name, args, self.project)
 
         for command in task.commands:
             if task.runner is not None:
