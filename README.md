@@ -54,7 +54,10 @@ lint = "pylint tests taskipy"
 ### Running Tasks
 In order to run a task, run the following command in your terminal:
 ```bash
-poetry run task test
+$ poetry run task --list
+test                python -m unittest tests/test_*.py
+lint                pylint tests taskipy
+$ poetry run task test
 ```
 
 ### Passing Command Line Args to Tasks

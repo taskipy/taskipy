@@ -12,17 +12,17 @@ def main():
         prog='task',
         description='runs a task specified in your pyproject.toml under [tool.taskipy.tasks]',
     )
-    parser.add_argument('name', help='name of the task')
-    parser.add_argument(
-        'args', nargs=argparse.REMAINDER, help='arguments to pass to the task'
-    )
+    parser.add_argument('--list', help='show list of available tasks', action='store_true')
+    parser.add_argument('name', help='name of the task', nargs='?')
+    parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
     args = parser.parse_args()
     try:
         runner = TaskRunner(Path.cwd() / 'pyproject.toml')
-        if args.name == 'list':
+        if args.list:
+            longest = len(max(runner.project.tasks, key=len))
             for k, v in runner.project.tasks.items():
-                print(f'{k:<20}{v}')
-            sys.exit(1)
+                print(f'{k:<{longest}}  {v}')
+            sys.exit(0)
         exit_code = runner.run(args.name, args.args)
         sys.exit(exit_code)
     except TaskipyError as e:

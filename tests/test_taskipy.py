@@ -178,6 +178,23 @@ class PassArgumentsTestCase(TaskipyTestCase):
         self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
         self.assertEqual(exit_code, 0)
 
+    def test_running_task_list(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
+
+        expected = "\n".join([
+            "echo_number            echo the number is",
+            "echo_named             echo got a named argument",
+            "echo_args_count        bash count.sh",
+            "pre_echo_on_prehook    echo the number in prehook is",
+            "echo_on_prehook        echo ok",
+            "echo_on_posthook       echo ok",
+            "post_echo_on_posthook  echo the number in posthook is",
+        ])
+        self.maxDiff = None
+        self.assertSubstr(expected, stdout)
+        self.assertEqual(exit_code, 0)
+
 
 class TaskRunFailTestCase(TaskipyTestCase):
     def test_exiting_with_code_127_and_printing_if_task_not_found(self):
