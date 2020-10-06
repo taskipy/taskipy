@@ -14,7 +14,7 @@ def main():
     )
     parser.add_argument('--list', help='show list of available tasks', action='store_true')
     parser.add_argument('name', help='name of the task', nargs='?')
-    parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
+    parser.add_argument('args', nargs='*', help='arguments to pass to the task')
     args = parser.parse_args()
     try:
         runner = TaskRunner(Path.cwd() / 'pyproject.toml')

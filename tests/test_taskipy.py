@@ -28,13 +28,11 @@ class TaskipyTestCase(unittest.TestCase):
     def run_task(self, task: str, args: List[str] = None, cwd=os.curdir) -> Tuple[int, str, str]:
         proc = self.start_taskipy_process(task, args=args, cwd=cwd)
         stdout, stderr = proc.communicate()
-
-        return proc.returncode, str(stdout), str(stderr)
+        return proc.returncode, stdout.decode(), str(stderr)
 
     def start_taskipy_process(self, task: str, args: List[str] = None, cwd=os.curdir) -> subprocess.Popen:
         executable_path = path.abspath('task')
         args = args or []
-
         return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
     def create_test_dir_from_fixture(self, fixture_name: str):
@@ -178,21 +176,33 @@ class PassArgumentsTestCase(TaskipyTestCase):
         self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
         self.assertEqual(exit_code, 0)
 
+
+class ListTaskTestCase(TaskipyTestCase):
+
     def test_running_task_list(self):
-        cwd = self.create_test_dir_from_fixture('project_with_tasks_that_accept_arguments')
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
         exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
 
         expected = "\n".join([
-            "echo_number            echo the number is",
-            "echo_named             echo got a named argument",
-            "echo_args_count        bash count.sh",
-            "pre_echo_on_prehook    echo the number in prehook is",
-            "echo_on_prehook        echo ok",
-            "echo_on_posthook       echo ok",
-            "post_echo_on_posthook  echo the number in posthook is",
+            "one    echo first task",
+            "two    echo second task",
+            "three  echo third task",
         ])
         self.maxDiff = None
-        self.assertSubstr(expected, stdout)
+        self.assertEqual(expected, stdout.strip())
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_list_with_arg(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+        exit_code, stdout, _ = self.run_task('does_not_exist', ['--list'], cwd=cwd)
+
+        expected = "\n".join([
+            "one    echo first task",
+            "two    echo second task",
+            "three  echo third task",
+        ])
+        self.maxDiff = None
+        self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
 
