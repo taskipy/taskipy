@@ -5,7 +5,7 @@
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![travis](https://img.shields.io/travis/illBeRoy/taskipy/master?style=flat-square)](https://travis-ci.org/illBeRoy/taskipy)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## General
@@ -166,6 +166,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://twitter.com/merwok_"><img src="https://avatars0.githubusercontent.com/u/635179?v=4" width="100px;" alt=""/><br /><sub><b>Éric Araujo</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=merwok" title="Code">💻</a></td>
     <td align="center"><a href="http://triguba.com"><img src="https://avatars3.githubusercontent.com/u/15860938?v=4" width="100px;" alt=""/><br /><sub><b>Eugene Triguba</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=eugenetriguba" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/RobinFrcd"><img src="https://avatars0.githubusercontent.com/u/29704178?v=4" width="100px;" alt=""/><br /><sub><b>RobinFrcd</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=RobinFrcd" title="Code">💻</a></td>
+    <td align="center"><a href="http://granitosaurus.rocks"><img src="https://avatars0.githubusercontent.com/u/5476164?v=4" width="100px;" alt=""/><br /><sub><b>Bernardas Ališauskas</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=Granitosaurus" title="Code">💻</a></td>
   </tr>
 </table>
 
