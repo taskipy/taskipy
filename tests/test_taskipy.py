@@ -177,7 +177,7 @@ class PassArgumentsTestCase(TaskipyTestCase):
         self.assertEqual(exit_code, 0)
 
 
-class ListTaskTestCase(TaskipyTestCase):
+class ListTasksTestCase(TaskipyTestCase):
 
     def test_running_task_list(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
@@ -192,15 +192,24 @@ class ListTaskTestCase(TaskipyTestCase):
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
-    def test_running_task_list_with_arg(self):
+    def test_running_task_list_before_name(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
-        exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
-
+        # anything following the flag should be ignored
+        exit_code, stdout, _ = self.run_task('--list', ['one'], cwd=cwd)
         expected = "\n".join([
             "one    echo first task",
             "two    echo second task",
             "three  echo third task",
         ])
+        self.maxDiff = None
+        self.assertEqual(expected, stdout.strip())
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_list_with_arg(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+        # when --list follows after task name it should be passed as an argument
+        exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
+        expected = "first task --list"
         self.maxDiff = None
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)

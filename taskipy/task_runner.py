@@ -15,6 +15,12 @@ class TaskRunner:
         self.__pyproject_path = pyproject_path
         self.project = PyProject(pyproject_path)
 
+    def list(self):
+        """lists tasks to stdout"""
+        longest = len(max(self.project.tasks, key=len))
+        for k, v in self.project.tasks.items():
+            print(f'{k:<{longest}}  {v}')
+
     def run(self, task_name: str, args: List[str]) -> int:
         task = Task(task_name, args, self.project)
 
