@@ -194,7 +194,7 @@ class ListTaskTestCase(TaskipyTestCase):
 
     def test_running_task_list_with_arg(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
-        exit_code, stdout, _ = self.run_task('does_not_exist', ['--list'], cwd=cwd)
+        exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
 
         expected = "\n".join([
             "one    echo first task",
