@@ -178,7 +178,6 @@ class PassArgumentsTestCase(TaskipyTestCase):
 
 
 class ListTasksTestCase(TaskipyTestCase):
-
     def test_running_task_list(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
         exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
@@ -188,7 +187,6 @@ class ListTasksTestCase(TaskipyTestCase):
             "two    echo second task",
             "three  echo third task",
         ])
-        self.maxDiff = None
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
@@ -201,7 +199,6 @@ class ListTasksTestCase(TaskipyTestCase):
             "two    echo second task",
             "three  echo third task",
         ])
-        self.maxDiff = None
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
@@ -210,7 +207,6 @@ class ListTasksTestCase(TaskipyTestCase):
         # when --list follows after task name it should be passed as an argument
         exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
         expected = "first task --list"
-        self.maxDiff = None
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
