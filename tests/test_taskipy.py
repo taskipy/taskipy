@@ -28,13 +28,11 @@ class TaskipyTestCase(unittest.TestCase):
     def run_task(self, task: str, args: List[str] = None, cwd=os.curdir) -> Tuple[int, str, str]:
         proc = self.start_taskipy_process(task, args=args, cwd=cwd)
         stdout, stderr = proc.communicate()
-
-        return proc.returncode, str(stdout), str(stderr)
+        return proc.returncode, stdout.decode(), str(stderr)
 
     def start_taskipy_process(self, task: str, args: List[str] = None, cwd=os.curdir) -> subprocess.Popen:
         executable_path = path.abspath('task')
         args = args or []
-
         return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
     def create_test_dir_from_fixture(self, fixture_name: str):
@@ -176,6 +174,44 @@ class PassArgumentsTestCase(TaskipyTestCase):
 
         self.assertSubstr('the number in posthook is', stdout)
         self.assertNotSubstr(f'the number in posthook is {some_random_number}', stdout)
+        self.assertEqual(exit_code, 0)
+
+
+class ListTasksTestCase(TaskipyTestCase):
+
+    def test_running_task_list(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+        exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
+
+        expected = "\n".join([
+            "one    echo first task",
+            "two    echo second task",
+            "three  echo third task",
+        ])
+        self.maxDiff = None
+        self.assertEqual(expected, stdout.strip())
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_list_before_name(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+        # anything following the flag should be ignored
+        exit_code, stdout, _ = self.run_task('--list', ['one'], cwd=cwd)
+        expected = "\n".join([
+            "one    echo first task",
+            "two    echo second task",
+            "three  echo third task",
+        ])
+        self.maxDiff = None
+        self.assertEqual(expected, stdout.strip())
+        self.assertEqual(exit_code, 0)
+
+    def test_running_task_list_with_arg(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+        # when --list follows after task name it should be passed as an argument
+        exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
+        expected = "first task --list"
+        self.maxDiff = None
+        self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
 
