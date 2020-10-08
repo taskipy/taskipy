@@ -253,7 +253,7 @@ class InterruptingTaskTestCase(TaskipyTestCase):
 
         processes = psutil_process_wrapper.children(recursive=True)
 
-        innermost_process = next(filter(lambda p: p.name().startswith('python'), processes))
+        innermost_process = next(filter(lambda p: p.name().lower().startswith('python'), processes))
         innermost_process.send_signal(signal.SIGINT)
 
     def test_handling_sigint_according_to_subprocess_if_it_handles_it_gracefully(self):
