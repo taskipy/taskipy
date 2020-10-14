@@ -6,15 +6,6 @@
   "commit": false,
   "contributors": [
     {
-      "login": "merwok",
-      "name": "Éric Araujo",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/635179?v=4",
-      "profile": "https://twitter.com/merwok_",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
       "login": "eugenetriguba",
       "name": "Eugene Triguba",
       "avatar_url": "https://avatars3.githubusercontent.com/u/15860938?v=4",
