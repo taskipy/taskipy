@@ -1,4 +1,4 @@
-# This workflow checks that 
+# This workflow checks that windows paths (a\b\c) work correctly when passed as args to taskipy
 
 name: Taskipy Windows Sanity Test
 
