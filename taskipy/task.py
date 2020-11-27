@@ -1,6 +1,6 @@
 import platform
 import shlex
-import mslex
+import mslex # type: ignore
 from typing import Optional, List
 
 from taskipy.exceptions import (
