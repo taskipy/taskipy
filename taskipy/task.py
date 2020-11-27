@@ -1,4 +1,6 @@
+import platform
 import shlex
+import mslex
 from typing import Optional, List
 
 from taskipy.exceptions import (
@@ -32,7 +34,7 @@ class Task:
             command = self.project.tasks[self.name]
             commands = []
             commands.append(
-                ' '.join([command] + [shlex.quote(arg) for arg in self.args])
+                ' '.join([command] + [self.__quote_arg(arg) for arg in self.args])
             )
 
             if self.pre_task:
@@ -62,3 +64,8 @@ class Task:
             return self.project.tasks[f'{hook_type}_{self.name}']
         except KeyError:
             return None
+
+    def __quote_arg(self, arg: str) -> str:
+        # if platform.system() == 'Windows':
+            # return mslex.quote(arg)
+        return shlex.quote(arg)

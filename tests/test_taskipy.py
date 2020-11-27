@@ -5,10 +5,10 @@ import subprocess
 import time
 import unittest
 import warnings
-from os import path
-from typing import List, Tuple
-
 import psutil  # type: ignore
+from os import path
+from unittest.mock import patch, MagicMock
+from typing import List, Tuple
 
 from tests.utils.project import (
     GenerateProjectFromFixture,
@@ -341,3 +341,14 @@ class CustomRunnerTestCase(TaskipyTestCase):
 
         self.assertSubstr('invalid value: runner is not a string. please check [tool.taskipy.settings.runner]', stdout)
         self.assertEqual(exit_code, 1)
+
+
+class WindowsArgumentHandlingTestCase(TaskipyTestCase):
+    @patch('platform.system')
+    def test_pass_windows_args_correctly(self, platform_system_mock: MagicMock):
+        platform_system_mock.return_value = 'Windows'
+        cwd = self.create_test_dir_from_fixture('project_with_windows_task')
+        exit_code, stdout, _ = self.run_task('echo', args=['hello', 'some\\windows\\path'], cwd=cwd)
+
+        self.assertEqual(stdout.strip(), 'hello some\\windows\\path')
+        self.assertEqual(exit_code, 0)
