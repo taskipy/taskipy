@@ -23,5 +23,5 @@ jobs:
         pip install poetry
     - name: Install dependencies
       run: poetry install
-    - name: Test
+    - name: Test Windows-Style Paths
       run: poetry run task run_unittest_as_windows_sanity tests\test_windows_sanity.py
