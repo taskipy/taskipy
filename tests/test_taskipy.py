@@ -7,7 +7,6 @@ import unittest
 import warnings
 import psutil  # type: ignore
 from os import path
-from unittest.mock import patch, MagicMock
 from typing import List, Tuple
 
 from tests.utils.project import (
