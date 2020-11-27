@@ -31,9 +31,9 @@ class TaskipyTestCase(unittest.TestCase):
         return proc.returncode, stdout.decode(), str(stderr)
 
     def start_taskipy_process(self, task: str, args: List[str] = None, cwd=os.curdir) -> subprocess.Popen:
-        executable_path = path.abspath('task')
+        entry_point_path = path.abspath(path.join('taskipy', 'cli.py'))
         args = args or []
-        return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
+        return subprocess.Popen(['python', entry_point_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
     def create_test_dir_from_fixture(self, fixture_name: str):
         project_generator = GenerateProjectFromFixture(path.join('tests', 'fixtures', fixture_name))
