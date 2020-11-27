@@ -66,6 +66,6 @@ class Task:
             return None
 
     def __quote_arg(self, arg: str) -> str:
-        # if platform.system() == 'Windows':
-            # return mslex.quote(arg)
+        if platform.system() == 'Windows':
+            return mslex.quote(arg)
         return shlex.quote(arg)
