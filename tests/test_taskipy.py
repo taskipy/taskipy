@@ -5,10 +5,9 @@ import subprocess
 import time
 import unittest
 import warnings
+import psutil  # type: ignore
 from os import path
 from typing import List, Tuple
-
-import psutil  # type: ignore
 
 from tests.utils.project import (
     GenerateProjectFromFixture,
