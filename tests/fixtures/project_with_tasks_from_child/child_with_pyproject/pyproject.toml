@@ -1,0 +1,6 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+hello = 'echo "hello from child"'
