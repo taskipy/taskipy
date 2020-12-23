@@ -17,7 +17,7 @@ def main():
     parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
     args = parser.parse_args()
     try:
-        runner = TaskRunner(Path.cwd() / 'pyproject.toml')
+        runner = TaskRunner(Path.cwd())
 
         if args.list:
             runner.list()

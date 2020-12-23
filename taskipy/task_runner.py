@@ -11,9 +11,10 @@ from taskipy.task import Task
 
 
 class TaskRunner:
-    def __init__(self, pyproject_path: Union[str, Path]):
-        self.__pyproject_path = pyproject_path
-        self.project = PyProject(pyproject_path)
+    def __init__(self, cwd: Union[str, Path]):
+        working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
+        self.__working_dir = working_dir
+        self.project = PyProject(working_dir)
 
     def list(self):
         """lists tasks to stdout"""
@@ -28,7 +29,7 @@ class TaskRunner:
             if task.runner is not None:
                 command = f'{task.runner} {command}'
             process = subprocess.Popen(
-                command, shell=True, cwd=Path(self.__pyproject_path).parent
+                command, shell=True, cwd=self.__working_dir
             )
 
             def send_signal_to_task_process(signum: int, frame) -> None:  # pylint: disable=unused-argument

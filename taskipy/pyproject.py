@@ -12,8 +12,9 @@ from taskipy.exceptions import (
 
 
 class PyProject:
-    def __init__(self, file_path: Union[str, Path]):
-        self.__items = PyProject.__load_toml_file(file_path)
+    def __init__(self, base_dir: Path):
+        pyproject_path = self.__find_pyproject_path(base_dir)
+        self.__items = PyProject.__load_toml_file(pyproject_path)
 
     @property
     def tasks(self) -> dict:
@@ -40,3 +41,15 @@ class PyProject:
             raise MissingPyProjectFileError()
         except toml.TomlDecodeError:
             raise MalformedPyProjectError()
+
+    @staticmethod
+    def __find_pyproject_path(base_dir: Path) -> Path:
+        def candidate_dirs(base: Path):
+            yield base
+            for parent in base.parents:
+                yield parent
+        for candidate_dir in candidate_dirs(base_dir):
+            pyproject = candidate_dir / 'pyproject.toml'
+            if pyproject.exists():
+                return pyproject
+        raise MissingPyProjectFileError()
