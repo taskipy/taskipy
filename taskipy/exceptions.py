@@ -12,7 +12,7 @@ class InvalidRunnerTypeError(TaskipyError):
 
 class MissingPyProjectFileError(TaskipyError):
     def __str__(self):
-        return 'no pyproject.toml file found in this directory'
+        return 'no pyproject.toml file found in this directory or parent directories'
 
 
 class MalformedPyProjectError(TaskipyError):

@@ -1,0 +1,6 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+print_current_dir_name = 'python -c "from pathlib import Path; print(Path.cwd().name)"'
