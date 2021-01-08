@@ -1,6 +1,6 @@
 <img src="./logo.svg" width="150" />
 
-> the complementary task runner for python poetry projects
+> the complementary task runner for python
 
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![ci](https://img.shields.io/github/workflow/status/illberoy/taskipy/Taskipy%20Test%20CI?style=flat-square)](https://github.com/illBeRoy/taskipy/actions?query=workflow%3A%22Taskipy+Test+CI%22)
@@ -19,6 +19,11 @@ python -m unittest tests/test_*.py
 You can create a task called `test` and simply run:
 ```bash
 poetry run task test
+```
+
+Or (if you're not using poetry):
+```bash
+task test
 ```
 
 In addition, you can compose tasks and group them together, and also create dependencies between them.
