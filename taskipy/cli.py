@@ -3,7 +3,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from taskipy.exceptions import TaskipyError
+from taskipy.exceptions import TaskipyError, InvalidUsageError
 from taskipy.task_runner import TaskRunner
 
 
@@ -16,12 +16,16 @@ def main():
     parser.add_argument('name', help='name of the task', nargs='?')
     parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
     args = parser.parse_args()
+
     try:
         runner = TaskRunner(Path.cwd())
 
         if args.list:
             runner.list()
             sys.exit(0)
+
+        if args.name is None:
+            raise InvalidUsageError(parser)
 
         exit_code = runner.run(args.name, args.args)
         sys.exit(exit_code)

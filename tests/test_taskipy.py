@@ -222,6 +222,21 @@ class TaskRunFailTestCase(TaskipyTestCase):
         self.assertSubstr('could not find task "task_that_does_not_exist"', stdout)
         self.assertEqual(exit_code, 127)
 
+    def test_exiting_with_code_127_and_printing_if_no_arg_is_passed(self):
+        cwd = self.create_test_dir_from_fixture('project_with_pyproject_and_tasks')
+        executable_path = path.abspath('task')
+        proc = subprocess.Popen(
+            executable_path,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=cwd
+        )
+        stdout, _ = proc.communicate()
+
+        self.assertSubstr('usage: task', stdout.decode())
+        self.assertEqual(proc.returncode, 127)
+
     def test_exiting_with_code_127_and_printing_if_no_tasks_section(self):
         cwd = self.create_test_dir_from_fixture('project_with_pyproject_without_tasks_section')
         exit_code, stdout, _ = self.run_task('task_that_does_not_exist', cwd=cwd)
