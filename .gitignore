@@ -23,3 +23,4 @@ share/python-wheels/
 MANIFEST
 .mypy_cache
 .idea
+.python-version
