@@ -1,6 +1,4 @@
 from argparse import ArgumentParser
-from contextlib import redirect_stdout
-from io import StringIO
 
 class TaskipyError(Exception):
     exit_code = 1
@@ -42,9 +40,7 @@ class InvalidUsageError(TaskipyError):
         self.__parser = parser
 
     def __str__(self):
-        with StringIO() as buf, redirect_stdout(buf):
-            self.__parser.print_usage()
-            return buf.getvalue().strip('\n')
+        return self.__parser.format_usage().strip('\n')
 
 class MissingTaskipySettingsSectionError(TaskipyError):
     exit_code = 127
