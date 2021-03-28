@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+
 class TaskipyError(Exception):
     exit_code = 1
 
@@ -30,6 +32,15 @@ class TaskNotFoundError(TaskipyError):
     def __str__(self):
         return f'could not find task "{self.task}"'
 
+class InvalidUsageError(TaskipyError):
+    exit_code = 127
+
+    def __init__(self, parser: ArgumentParser):
+        super().__init__()
+        self.__parser = parser
+
+    def __str__(self):
+        return self.__parser.format_usage().strip('\n')
 
 class MissingTaskipySettingsSectionError(TaskipyError):
     exit_code = 127
