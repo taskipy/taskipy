@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from typing import Optional
 
 class TaskipyError(Exception):
     exit_code = 1
@@ -35,11 +36,13 @@ class TaskNotFoundError(TaskipyError):
 class InvalidUsageError(TaskipyError):
     exit_code = 127
 
-    def __init__(self, parser: ArgumentParser):
+    def __init__(self, parser: Optional[ArgumentParser] = None):
         super().__init__()
         self.__parser = parser
 
     def __str__(self):
+        if not self.__parser:
+            return ""
         return self.__parser.format_usage().strip('\n')
 
 class MissingTaskipySettingsSectionError(TaskipyError):
