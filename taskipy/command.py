@@ -11,7 +11,7 @@ from taskipy.exceptions import (
 from taskipy.pyproject import PyProject
 
 
-class Task:
+class Command:
     def __init__(self, task_name: str, args: List[str], project: PyProject):
         self.project = project
         self.name = task_name

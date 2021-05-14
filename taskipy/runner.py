@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import List, Union
 
 from taskipy.pyproject import PyProject
-from taskipy.task import Task
+from taskipy.command import Command
 
 
-class TaskRunner:
+class Runner:
     def __init__(self, cwd: Union[str, Path]):
         working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
         self.__working_dir = working_dir
@@ -23,7 +23,7 @@ class TaskRunner:
             print(f'{k:<{longest}}  {v}')
 
     def run(self, task_name: str, args: List[str]) -> int:
-        task = Task(task_name, args, self.project)
+        task = Command(task_name, args, self.project)
 
         for command in task.commands:
             if task.runner is not None:

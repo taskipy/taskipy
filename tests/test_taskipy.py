@@ -94,6 +94,7 @@ class RunTaskTestCase(TaskipyTestCase):
 
         self.assertSubstr('hello stderr', stderr)
 
+
 class TaskPrePostHooksTestCase(TaskipyTestCase):
     def test_running_pre_task_hook(self):
         cwd = self.create_test_dir_from_fixture('project_with_pre_post_task_hooks')
@@ -212,6 +213,18 @@ class ListTasksTestCase(TaskipyTestCase):
 
         self.assertEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
+
+
+# class TaskDescriptionTestCase(TaskipyTestCase):
+#     def test_running_task_with_description(self):
+#         py_project_toml = '''
+#             [tool.taskipy.tasks]
+#             print_age = { cmd = "echo age is 29", help = "prints the age" }
+#         '''
+#         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+#         _, stdout, _ = self.run_task('print_age', cwd=cwd)
+
+#         self.assertSubstr('age is 29', stdout)
 
 
 class TaskRunFailTestCase(TaskipyTestCase):

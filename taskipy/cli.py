@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from taskipy.exceptions import TaskipyError, InvalidUsageError
-from taskipy.task_runner import TaskRunner
+from taskipy.runner import Runner
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        runner = TaskRunner(Path.cwd())
+        runner = Runner(Path.cwd())
 
         if args.list:
             runner.list()
