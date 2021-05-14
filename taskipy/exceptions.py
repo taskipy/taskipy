@@ -32,6 +32,15 @@ class TaskNotFoundError(TaskipyError):
     def __str__(self):
         return f'could not find task "{self.task}"'
 
+class MalformedTaskError(TaskipyError):
+    def __init__(self, task_name: str, reason: str):
+        super().__init__()
+        self.task = task_name
+        self.reason = reason
+
+    def __str__(self):
+        return f'the task "{self.task}" in the pyproject.toml file is malformed. reason: {self.reason}'
+
 class InvalidUsageError(TaskipyError):
     exit_code = 127
 

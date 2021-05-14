@@ -215,16 +215,59 @@ class ListTasksTestCase(TaskipyTestCase):
         self.assertEqual(exit_code, 0)
 
 
-# class TaskDescriptionTestCase(TaskipyTestCase):
-#     def test_running_task_with_description(self):
-#         py_project_toml = '''
-#             [tool.taskipy.tasks]
-#             print_age = { cmd = "echo age is 29", help = "prints the age" }
-#         '''
-#         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-#         _, stdout, _ = self.run_task('print_age', cwd=cwd)
+class TaskDescriptionTestCase(TaskipyTestCase):
+    def test_running_task_with_description(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            print_age = { cmd = "echo age is 29", help = "prints the age" }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        _, stdout, _ = self.run_task('print_age', cwd=cwd)
 
-#         self.assertSubstr('age is 29', stdout)
+        self.assertSubstr('age is 29', stdout)
+
+    def test_listing_task_with_description(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            print_age = { cmd = "echo age is 29", help = "prints the age" }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        _, stdout, _ = self.run_task('--list', cwd=cwd)
+
+        self.assertSubstr('prints the age', stdout)
+
+    def test_reject_task_for_not_having_cmd(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            print_age = { help = "prints the age" }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('print_age', cwd=cwd)
+
+        self.assertEqual(exit_code, 1)
+        self.assertSubstr('the task item does not have the "cmd" property', stdout)
+
+    def test_allow_task_to_not_have_help(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            print_age = { cmd = "echo age is 29" }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('print_age', cwd=cwd)
+
+        self.assertEqual(exit_code, 0)
+        self.assertSubstr('age is 29', stdout)
+
+    def test_reject_task_that_is_not_string_nor_object(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            print_age = 5
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('print_age', cwd=cwd)
+
+        self.assertEqual(exit_code, 1)
+        self.assertSubstr('tasks must be strings, or objects that contain { cmd, help }', stdout)
 
 
 class TaskRunFailTestCase(TaskipyTestCase):
