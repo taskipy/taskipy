@@ -1,7 +1,7 @@
 import toml
 
 from pathlib import Path
-from typing import Any, MutableMapping, Optional, Union
+from typing import Any, Dict, MutableMapping, Optional, Union
 
 from taskipy.task import Task
 from taskipy.exceptions import (
@@ -19,7 +19,7 @@ class PyProject:
         self.__items = PyProject.__load_toml_file(pyproject_path)
 
     @property
-    def tasks(self) -> dict[str, Task]:
+    def tasks(self) -> Dict[str, Task]:
         try:
             return {
                 task_name: Task(task_name, task_toml_contents) for
