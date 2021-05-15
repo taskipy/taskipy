@@ -61,7 +61,7 @@ class TaskRunner:
                 return mslex.quote(arg)
             return shlex.quote(arg)
 
-        def send_signal_to_task_process(signum: int, frame) -> None:  # pylint: disable=unused-argument
+        def send_signal_to_task_process(signum: int, _frame) -> None:
             # pylint: disable=W0640
             psutil_process_wrapper = psutil.Process(process.pid)
             is_direct_subprocess_a_shell_process = sys.platform != 'darwin'  # pylint: disable=C0103
