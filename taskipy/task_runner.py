@@ -6,14 +6,11 @@ import subprocess
 import shlex
 import mslex # type: ignore
 from pathlib import Path
-from typing import List, Literal, Union, Optional
+from typing import List, Union, Optional
 
 from taskipy.pyproject import PyProject
 from taskipy.exceptions import TaskNotFoundError
 from taskipy.task import Task
-
-
-HookTypes = Literal['pre', 'post']
 
 
 class TaskRunner:
@@ -97,7 +94,7 @@ class TaskRunner:
     def __post_task(self, task_name: str):
         return self.__find_hooks('post', task_name)
 
-    def __find_hooks(self, hook_type: HookTypes, task_name: str) -> Optional[Task]:
+    def __find_hooks(self, hook_type: str, task_name: str) -> Optional[Task]:
         try:
             return self.project.tasks[f'{hook_type}_{task_name}']
         except KeyError:
