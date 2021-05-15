@@ -32,25 +32,25 @@ rope = "^0.14.0"
 psutil = "^5.6.7"
 
 [tool.taskipy.tasks]
-test = "python -m unittest -v tests/test_*.py"
+test = { cmd = "python -m unittest -v tests/test_*.py", help = "runs all tests" }
 post_test = "./task lint"
 
-run_unittest_as_windows_sanity = "python -m unittest -v"
+run_unittest_as_windows_sanity = { cmd = "python -m unittest -v", help = "this is a command that is run by our Windows CI on Github" }
 
-lint = "./task lint_pylint && ./task lint_mypy"
+lint = { cmd = "./task lint_pylint && ./task lint_mypy", help = "lint project with pylint for style and mypy for typings" }
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
 
-publish = "poetry publish --build"
+publish = { cmd = "poetry publish --build", help = "publishes taskipy to PyPI as is. do not use directly" }
 post_publish = "./task make_release_commit"
 
-make_release_commit = "python ./.hooks/make_release_commit.py"
+make_release_commit = { cmd = "python ./.hooks/make_release_commit.py", help = "creates a tagged commit for the release. do not use directly" }
 
 pre_publish_patch = "./task test"
-publish_patch = "poetry version patch && ./task publish"
+publish_patch = { cmd = "poetry version patch && ./task publish", help = "publishes a patch version, that has only fixes but no new features (x.x.PATCH)" }
 
 pre_publish_minor = "./task test"
-publish_minor = "poetry version minor && ./task publish"
+publish_minor = { cmd = "poetry version minor && ./task publish", help = "publishes a minor version, which has new fetures (x.MINOR.x)" }
 
 [build-system]
 requires = ["poetry>=0.12"]
