@@ -62,7 +62,7 @@ __pyproject.toml__
 ```toml
 [tool.taskipy.tasks]
 test = { cmd = "python -m unittest tests/test_*.py", help = "runs all unit tests" }
-lint = { cmd = "pylint tests taskipy", help = "confirms code style using pylint" }
+lint = { cmd = "pylint tests taskipy", help = "confirms code style using pylint" } 
 ```
 
 The explicit notation is more verbose, but provides better context to anyone who uses the task.
