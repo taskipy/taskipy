@@ -24,6 +24,7 @@ python = "^3.6"
 toml = "^0.10.0"
 psutil = "^5.7.2"
 mslex = "^0.3.0"
+colorama = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.4.4"

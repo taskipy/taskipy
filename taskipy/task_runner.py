@@ -11,6 +11,7 @@ from typing import List, Union, Optional
 from taskipy.pyproject import PyProject
 from taskipy.exceptions import TaskNotFoundError
 from taskipy.task import Task
+from taskipy.help import HelpFormatter
 
 
 class TaskRunner:
@@ -21,9 +22,8 @@ class TaskRunner:
 
     def list(self):
         """lists tasks to stdout"""
-        longest = len(max(self.project.tasks, key=len))
-        for k, v in self.project.tasks.items():
-            print(f'{k:<{longest}}  {v.description or v.command}')
+        formatter = HelpFormatter(self.project.tasks.values())
+        formatter.print()
 
     def run(self, task_name: str, args: List[str]) -> int:
         try:

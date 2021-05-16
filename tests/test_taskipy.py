@@ -65,6 +65,11 @@ class TaskipyTestCase(unittest.TestCase):
                             full_string.find(substr_b),
                             msg=f'Expected \n  "{substr_a}"\nto appear before\n  "{substr_b}"\nin\n  "{full_string}"')
 
+    def assertTerminalTextEqual(self, expected: str, actual: str):
+        expected_without_ansi_chars = expected.encode('ascii', 'ignore')
+        actual_without_ansi_chars = actual.encode('ascii', 'ignore')
+        self.assertEqual(expected_without_ansi_chars, actual_without_ansi_chars)
+
 
 class RunTaskTestCase(TaskipyTestCase):
     def test_running_task(self):
@@ -178,23 +183,23 @@ class PassArgumentsTestCase(TaskipyTestCase):
 
 class ListTasksTestCase(TaskipyTestCase):
     project_tasks_output = "\n".join([
-        "one    echo first task",
-        "two    echo second task",
-        "three  echo third task",
+        "one   echo first task",
+        "two   echo second task",
+        "three echo third task",
     ])
 
     def test_running_task_list(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
         exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
 
-        self.assertEqual(self.project_tasks_output, stdout.strip())
+        self.assertTerminalTextEqual(self.project_tasks_output, stdout.strip())
         self.assertEqual(exit_code, 0)
 
     def test_running_task_list_with_shorthand(self):
         cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
         exit_code, stdout, _ = self.run_task('-l', cwd=cwd)
 
-        self.assertEqual(self.project_tasks_output, stdout.strip())
+        self.assertTerminalTextEqual(self.project_tasks_output, stdout.strip())
         self.assertEqual(exit_code, 0)
 
     def test_running_task_list_before_name(self):
@@ -202,7 +207,7 @@ class ListTasksTestCase(TaskipyTestCase):
         # anything following the flag should be ignored
         exit_code, stdout, _ = self.run_task('--list', ['one'], cwd=cwd)
 
-        self.assertEqual(self.project_tasks_output, stdout.strip())
+        self.assertTerminalTextEqual(self.project_tasks_output, stdout.strip())
         self.assertEqual(exit_code, 0)
 
     def test_running_task_list_with_arg(self):
@@ -211,7 +216,7 @@ class ListTasksTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('one', ['--list'], cwd=cwd)
         expected = "first task --list"
 
-        self.assertEqual(expected, stdout.strip())
+        self.assertTerminalTextEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
 
