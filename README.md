@@ -2,17 +2,12 @@
 <img src="./logo.svg" width="150" />
 </p>
 
-<p align="center">
-
+## General
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![ci](https://img.shields.io/github/workflow/status/illberoy/taskipy/Taskipy%20Test%20CI?style=flat-square)](https://github.com/illBeRoy/taskipy/actions?query=workflow%3A%22Taskipy+Test+CI%22)
 [![All Contributors](https://img.shields.io/github/all-contributors/illberoy/taskipy?color=orange&style=flat-square)](#contributors-)
 
-</p>
-
-
-## General
-**> The complementary task runner for python. _**
+**The complementary task runner for python.**
 
 Every development pipeline has tasks, such as `test`, `lint` or `publish`. With taskipy, you can define those tasks in one file and run them with a simple command.
 
