@@ -18,16 +18,16 @@ class TaskRunner:
     def __init__(self, cwd: Union[str, Path]):
         working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
         self.__working_dir = working_dir
-        self.project = PyProject(working_dir)
+        self.__project = PyProject(working_dir)
 
     def list(self):
         """lists tasks to stdout"""
-        formatter = HelpFormatter(self.project.tasks.values())
+        formatter = HelpFormatter(self.__project.tasks.values())
         formatter.print()
 
     def run(self, task_name: str, args: List[str]) -> int:
         try:
-            task = self.project.tasks[task_name]
+            task = self.__project.tasks[task_name]
         except KeyError:
             raise TaskNotFoundError(task_name)
 
@@ -53,8 +53,8 @@ class TaskRunner:
         if args is None:
             args = []
 
-        if self.project.runner is not None:
-            command = f'{self.project.runner} {command}'
+        if self.__project.runner is not None:
+            command = f'{self.__project.runner} {command}'
 
         def quote_arg(arg: str) -> str:
             if platform.system() == 'Windows':
@@ -96,6 +96,6 @@ class TaskRunner:
 
     def __find_hooks(self, hook_type: str, task_name: str) -> Optional[Task]:
         try:
-            return self.project.tasks[f'{hook_type}_{task_name}']
+            return self.__project.tasks[f'{hook_type}_{task_name}']
         except KeyError:
             return None
