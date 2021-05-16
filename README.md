@@ -47,7 +47,7 @@ In your `pyproject.toml` file, add a new section called `[tool.taskipy.tasks]`.
 
 The section is a key-value map, from the names of the task to the actual command that should be run in the shell.
 
-Example:
+There are two ways to define tasks. The easy way is to simply write the command down as a string:
 
 __pyproject.toml__
 ```toml
@@ -55,6 +55,17 @@ __pyproject.toml__
 test = "python -m unittest tests/test_*.py"
 lint = "pylint tests taskipy"
 ```
+
+Alternatively, you can define tasks more explicitly by declaring both the command and a helpful description using an inline table:
+
+__pyproject.toml__
+```toml
+[tool.taskipy.tasks]
+test = { cmd = "python -m unittest tests/test_*.py", help = "runs all unit tests" }
+lint = { cmd = "pylint tests taskipy", help = "confirms code style using pylint" } 
+```
+
+The explicit notation is more verbose, but provides better context to anyone who uses the task.
 
 ### Running Tasks
 In order to run a task, run the following command in your terminal:
@@ -67,6 +78,13 @@ You can also list all existing tasks by running the following:
 $ poetry run task --list
 test                python -m unittest tests/test_*.py
 lint                pylint tests taskipy
+```
+
+If you declared your task explicitly, you will see the description of the task by the side of the task's name:
+```bash
+$ poetry run task --list
+test                runs all unit tests
+lint                confirms code style using pylint
 ```
 
 ### Passing Command Line Args to Tasks

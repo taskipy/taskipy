@@ -1,9 +1,11 @@
-from pathlib import Path
-from typing import Any, MutableMapping, Union
-
 import toml
 
+from pathlib import Path
+from typing import Any, Dict, MutableMapping, Optional, Union
+
+from taskipy.task import Task
 from taskipy.exceptions import (
+    InvalidRunnerTypeError,
     MalformedPyProjectError,
     MissingPyProjectFileError,
     MissingTaskipyTasksSectionError,
@@ -17,9 +19,11 @@ class PyProject:
         self.__items = PyProject.__load_toml_file(pyproject_path)
 
     @property
-    def tasks(self) -> dict:
+    def tasks(self) -> Dict[str, Task]:
         try:
-            return self.__items['tool']['taskipy']['tasks']
+            return {
+                task_name: Task(task_name, task_toml_contents) for
+                task_name, task_toml_contents in self.__items['tool']['taskipy']['tasks'].items() }
         except KeyError:
             raise MissingTaskipyTasksSectionError()
 
@@ -29,6 +33,18 @@ class PyProject:
             return self.__items['tool']['taskipy']['settings']
         except KeyError:
             raise MissingTaskipySettingsSectionError()
+
+    @property
+    def runner(self) -> Optional[str]:
+        try:
+            runner = self.settings['runner']
+
+            if not isinstance(runner, str):
+                raise InvalidRunnerTypeError()
+
+            return runner.strip()
+        except (KeyError, MissingTaskipySettingsSectionError):
+            return None
 
     @staticmethod
     def __load_toml_file(file_path: Union[str, Path]) -> MutableMapping[str, Any]:

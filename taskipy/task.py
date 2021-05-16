@@ -1,71 +1,44 @@
-import platform
-import shlex
-import mslex # type: ignore
-from typing import Optional, List
-
-from taskipy.exceptions import (
-    InvalidRunnerTypeError,
-    TaskNotFoundError,
-    MissingTaskipySettingsSectionError
-)
-from taskipy.pyproject import PyProject
+from taskipy.exceptions import MalformedTaskError
 
 
 class Task:
-    def __init__(self, task_name: str, args: List[str], project: PyProject):
-        self.project = project
-        self.name = task_name
-        self.args = args
-
-    def __str__(self) -> str:
-        return self.name
+    def __init__(self, task_name: str, task_toml_contents: object):
+        self.__task_name = task_name
+        self.__task_command = self.__extract_task_command(task_toml_contents)
+        self.__task_description = self.__extract_task_description(task_toml_contents)
 
     @property
-    def pre_task(self) -> Optional[str]:
-        return self.__find_hooks('pre')
+    def name(self):
+        return self.__task_name
 
     @property
-    def post_task(self) -> Optional[str]:
-        return self.__find_hooks('post')
+    def command(self):
+        return self.__task_command
 
     @property
-    def commands(self) -> List[str]:
-        try:
-            command = self.project.tasks[self.name]
-            commands = []
-            commands.append(
-                ' '.join([command] + [self.__quote_arg(arg) for arg in self.args])
-            )
+    def description(self):
+        return self.__task_description
 
-            if self.pre_task:
-                commands.insert(0, self.pre_task)
+    def __extract_task_command(self, task_toml_contents: object) -> str:
+        if isinstance(task_toml_contents, str):
+            return task_toml_contents
 
-            if self.post_task:
-                commands.append(self.post_task)
+        if isinstance(task_toml_contents, dict):
+            try:
+                return task_toml_contents['cmd']
+            except KeyError:
+                raise MalformedTaskError(self.__task_name, 'the task item does not have the "cmd" property')
 
-            return commands
-        except KeyError:
-            raise TaskNotFoundError(self.name)
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help }')
 
-    @property
-    def runner(self) -> Optional[str]:
-        try:
-            runner = self.project.settings['runner']
+    def __extract_task_description(self, task_toml_contents: object) -> str:
+        if isinstance(task_toml_contents, str):
+            return ''
 
-            if not isinstance(runner, str):
-                raise InvalidRunnerTypeError()
+        if isinstance(task_toml_contents, dict):
+            try:
+                return task_toml_contents['help']
+            except KeyError:
+                return ''
 
-            return runner.strip()
-        except (KeyError, MissingTaskipySettingsSectionError):
-            return None
-
-    def __find_hooks(self, hook_type: str) -> Optional[str]:
-        try:
-            return self.project.tasks[f'{hook_type}_{self.name}']
-        except KeyError:
-            return None
-
-    def __quote_arg(self, arg: str) -> str:
-        if platform.system() == 'Windows':
-            return mslex.quote(arg)
-        return shlex.quote(arg)
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help }')
