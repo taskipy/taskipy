@@ -24,7 +24,7 @@ class GenerateProjectWithPyProjectToml(ProjectDirGenerator):
 
     def generate_project(self, temp_dir: str):
         os.makedirs(temp_dir)
-        with open(path.join(temp_dir, 'pyproject.toml'), 'w') as f:
+        with open(path.join(temp_dir, 'pyproject.toml'), 'w', encoding='utf-8') as f:
             f.write(self._py_project_toml)
 
 
