@@ -12,7 +12,7 @@ from taskipy.task import Task
 from taskipy.help import HelpFormatter
 
 if platform.system() == 'Windows':
-    import mslex as shlex  # type: ignore
+    import mslex as shlex  # type: ignore # pylint: disable=E0401
 else:
     import shlex  # type: ignore[no-redef]
 
