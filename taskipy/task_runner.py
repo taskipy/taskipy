@@ -3,8 +3,6 @@ import platform
 import psutil  # type: ignore
 import signal
 import subprocess
-import shlex
-import mslex # type: ignore
 from pathlib import Path
 from typing import List, Union, Optional
 
@@ -12,6 +10,11 @@ from taskipy.pyproject import PyProject
 from taskipy.exceptions import TaskNotFoundError
 from taskipy.task import Task
 from taskipy.help import HelpFormatter
+
+if platform.system() == 'Windows':
+    import mslex as shlex  # type: ignore # pylint: disable=E0401
+else:
+    import shlex  # type: ignore[no-redef]
 
 
 class TaskRunner:
@@ -56,11 +59,6 @@ class TaskRunner:
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'
 
-        def quote_arg(arg: str) -> str:
-            if platform.system() == 'Windows':
-                return mslex.quote(arg)
-            return shlex.quote(arg)
-
         def send_signal_to_task_process(signum: int, _frame) -> None:
             # pylint: disable=W0640
             psutil_process_wrapper = psutil.Process(process.pid)
@@ -75,7 +73,7 @@ class TaskRunner:
             else:
                 process.send_signal(signum)
 
-        command_with_args = ' '.join([command] + [quote_arg(arg) for arg in args])
+        command_with_args = ' '.join([command] + [shlex.quote(arg) for arg in args])
         process = subprocess.Popen(command_with_args,
                                    shell=True,
                                    cwd=self.__working_dir)

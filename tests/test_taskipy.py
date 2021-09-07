@@ -76,7 +76,7 @@ class RunTaskTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_from_fixture('project_with_pyproject_and_tasks')
         self.run_task('create_hello_txt', cwd=cwd)
 
-        with open(path.join(cwd, 'hello.txt'), 'r') as f:
+        with open(path.join(cwd, 'hello.txt'), 'r', encoding='utf-8') as f:
             hello_file_contents = f.readline().strip()
 
         self.assertEqual(hello_file_contents, 'hello, world')
