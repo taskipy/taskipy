@@ -56,6 +56,8 @@ class TaskRunner:
         if args is None:
             args = []
 
+        command = command.format(**self.__project.variables)
+
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'
 

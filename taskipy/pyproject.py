@@ -28,6 +28,10 @@ class PyProject:
             raise MissingTaskipyTasksSectionError()
 
     @property
+    def variables(self) -> Dict[str, Task]:
+        return self.__items['tool']['taskipy'].get('variables', {})
+
+    @property
     def settings(self) -> dict:
         try:
             return self.__items['tool']['taskipy']['settings']
