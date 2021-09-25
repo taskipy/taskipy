@@ -36,27 +36,29 @@ class TaskRunner:
 
         pre_task = self.__pre_task(task_name)
         if pre_task is not None:
-            exit_code = self.__run_command_and_return_exit_code(pre_task.command)
+            exit_code = self.__run_command_and_return_exit_code(pre_task)
             if exit_code != 0:
                 return exit_code
 
-        exit_code = self.__run_command_and_return_exit_code(task.command, args)
+        exit_code = self.__run_command_and_return_exit_code(task, args)
         if exit_code != 0:
             return exit_code
 
         post_task = self.__post_task(task_name)
         if post_task is not None:
-            exit_code = self.__run_command_and_return_exit_code(post_task.command)
+            exit_code = self.__run_command_and_return_exit_code(post_task)
             if exit_code != 0:
                 return exit_code
 
         return 0
 
-    def __run_command_and_return_exit_code(self, command: str, args: List[str] = None) -> int:
+    def __run_command_and_return_exit_code(self, task: Task, args: List[str] = None) -> int:
         if args is None:
             args = []
 
-        command = command.format(**self.__project.variables)
+        command = task.command
+        if task.use_vars:
+            command = command.format(**self.__project.variables)
 
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'
