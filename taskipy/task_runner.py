@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Union, Optional
 
 from taskipy.pyproject import PyProject
-from taskipy.exceptions import TaskNotFoundError
+from taskipy.exceptions import TaskNotFoundError, MalformedTaskError
 from taskipy.task import Task
 from taskipy.help import HelpFormatter
 
@@ -58,7 +58,10 @@ class TaskRunner:
 
         command = task.command
         if task.use_vars:
-            command = command.format(**self.__project.variables)
+            try:
+                command = command.format(**self.__project.variables)
+            except KeyError as e:
+                raise MalformedTaskError(task.name, f"{e} variable expected in [pyproject.taskipy.variables]")
 
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'

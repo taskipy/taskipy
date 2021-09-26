@@ -22,16 +22,19 @@ class Task:
 
     @property
     def use_vars(self):
-        return self.__task_user_vars
+        return self.__task_use_vars
 
     def __extract_task_use_vars(self, task_toml_contents: object) -> bool:
         if isinstance(task_toml_contents, str):
             return False
         if isinstance(task_toml_contents, dict):
             try:
-                return task_toml_contents['use_vars']
+                value = task_toml_contents['use_vars']
             except KeyError:
                 return False
+            if not isinstance(value, bool):
+                raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
+            return value
         raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
 
     def __extract_task_command(self, task_toml_contents: object) -> str:
