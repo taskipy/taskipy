@@ -429,3 +429,80 @@ class TaskFromChildTestCase(TaskipyTestCase):
         _, stdout, _ = self.run_task('hello', cwd=path.join(cwd, 'child_with_pyproject'))
 
         self.assertSubstr('hello from child', stdout)
+
+
+class UseVarsTestCase(TaskipyTestCase):
+    def test_use_vars_working(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name:<10}:", use_vars=true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello John Doe :', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_use_vars_no_param(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}" }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello {name}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_use_vars_param_disabled(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}", use_vars=false}
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello {name}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_use_vars_str_task_no_param(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = "echo hello {name}"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello {name}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_use_vars_param_malformed(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}", use_vars=1}
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('task\'s "use_vars" arg has to be bool', stdout)
+        self.assertEqual(exit_code, 1)
+
+    def test_use_vars_missing_var(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}", use_vars=true}
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr("reason: 'name' variable expected in [pyproject.taskipy.variables", stdout)
+        self.assertEqual(exit_code, 1)
