@@ -6,7 +6,7 @@ class Task:
         self.__task_name = task_name
         self.__task_command = self.__extract_task_command(task_toml_contents)
         self.__task_description = self.__extract_task_description(task_toml_contents)
-        self.__task_user_vars = self.__extract_task_use_vars(task_toml_contents)
+        self.__task_use_vars = self.__extract_task_use_vars(task_toml_contents)
 
     @property
     def name(self):
