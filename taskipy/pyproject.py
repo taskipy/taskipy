@@ -29,7 +29,10 @@ class PyProject:
 
     @property
     def variables(self) -> Dict[str, Task]:
-        return self.__items['tool']['taskipy'].get('variables', {})
+        try:
+            return self.__items['tool']['taskipy'].get('variables', {})
+        except KeyError:
+            return {}
 
     @property
     def settings(self) -> dict:
