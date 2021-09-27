@@ -39,7 +39,7 @@ class PyProject:
         try:
             return self.__items['tool']['taskipy']['settings']
         except KeyError:
-            raise MissingTaskipySettingsSectionError()
+            return {}
 
     @property
     def runner(self) -> Optional[str]:
