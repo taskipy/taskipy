@@ -49,7 +49,7 @@ class PyProject:
                 raise InvalidRunnerTypeError()
 
             return runner.strip()
-        except (KeyError, MissingTaskipySettingsSectionError):
+        except KeyError:
             return None
 
     @staticmethod
