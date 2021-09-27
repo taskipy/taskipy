@@ -438,7 +438,7 @@ class UseVarsTestCase(TaskipyTestCase):
             name = "John Doe"
 
             [tool.taskipy.tasks]
-            echo = { cmd = "echo hello {name:<10}:", use_vars=true }
+            echo = { cmd = "echo hello {name:<10}:", use_vars = true }
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
@@ -464,7 +464,7 @@ class UseVarsTestCase(TaskipyTestCase):
             name = "John Doe"
 
             [tool.taskipy.tasks]
-            echo = { cmd = "echo hello {name}", use_vars=false}
+            echo = { cmd = "echo hello {name}", use_vars = false }
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
@@ -490,7 +490,7 @@ class UseVarsTestCase(TaskipyTestCase):
             name = "John Doe"
 
             [tool.taskipy.tasks]
-            echo = { cmd = "echo hello {name}", use_vars=1}
+            echo = { cmd = "echo hello {name}", use_vars = 1 }
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
@@ -500,7 +500,7 @@ class UseVarsTestCase(TaskipyTestCase):
     def test_use_vars_missing_var(self):
         py_project_toml = '''
             [tool.taskipy.tasks]
-            echo = { cmd = "echo hello {name}", use_vars=true}
+            echo = { cmd = "echo hello {name}", use_vars = true }
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)

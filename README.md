@@ -4,6 +4,20 @@
 
 </p>
 
+- [General](#general)
+- [Requirements](#requirements)
+- [Usage](#usage)
+  * [Installation](#installation)
+  * [Adding Tasks](#adding-tasks)
+  * [Running Tasks](#running-tasks)
+  * [Passing Command Line Args to Tasks](#passing-command-line-args-to-tasks)
+  * [Composing Tasks](#composing-tasks)
+  * [Using Variables](#using-variables)
+  * [Using Taskipy Without Poetry](#using-taskipy-without-poetry)
+  * [Advanced Use Cases](#advanced-use-cases)
+- [Maintainers 🚧](#maintainers---)
+- [Contributors ✨](#contributors--)
+
 ## General
 [![pypi](https://img.shields.io/pypi/v/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![ci](https://img.shields.io/github/workflow/status/illberoy/taskipy/Taskipy%20Test%20CI?style=flat-square)](https://github.com/illBeRoy/taskipy/actions?query=workflow%3A%22Taskipy+Test+CI%22)
@@ -158,6 +172,53 @@ lint = "pylint tests taskipy"
 ```
 
 The posttask hook looks for `post_<task_name>` task for a given `task_name`. It will run it after running the task itself. If the task failed, then taskipy will not run the posttask hook.
+
+### Using Variables
+In some cases, you might find yourself passing the same arguments over and over again. Let us take a look at the following tasks:
+
+```toml
+[tool.taskipy.tasks]
+lint = "pylint path/to/my_module"
+black = "black path/to/my_module"
+```
+
+As you can see, we provide the same path argument to both `pylint` and `black`.
+
+In order to encourage DRY and improve your ability to change these values later on, taskipy actually lets you declare and reuse variables in your tasks:
+
+```toml
+[tool.taskipy.variables]
+path = "path/to/my_module"
+
+[tool.taskipy.tasks]
+lint = { cmd = "pylint {path}", use_vars = true }
+black = { cmd = "pylint {path}", use_vars = true }
+```
+
+We have made the following changes to our configuration:
+1. We declared variables under `tool.taskipy.variables`
+2. We flagged the relevant task using `use_vars` to note that they should use the variables
+3. We replaced the repeating path with a `{path}` variable
+
+#### String Formatting
+The formatting of the task commands uses python's own `string.format` method, and therefore supports everything that python's [formatted string literals](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) let you do.
+
+#### Always Use Variables
+Using variables is opt-in, which means that by default commands do **not** use them, and you will have to turn them on a task to task basis.
+
+If you want to turn on `use_vars` globally, all you need to do is to declare that under taskipy's **settings** table:
+
+```toml
+[tool.taskipy.settings]
+use_vars = true
+
+[tool.taskipy.variables]
+path = "path/to/my_module"
+
+[tool.taskipy.tasks]
+lint = "pylint {path}"
+black = "black {path}"
+```
 
 ### Using Taskipy Without Poetry
 Taskipy was created with poetry projects in mind, but actually only requires a valid `pyproject.toml` file in your project's directory. As a result, you can use it even eithout poetry:
