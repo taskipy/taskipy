@@ -8,8 +8,7 @@ from taskipy.exceptions import (
     InvalidRunnerTypeError,
     MalformedPyProjectError,
     MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError,
-    MissingTaskipySettingsSectionError
+    MissingTaskipyTasksSectionError
 )
 
 
@@ -28,11 +27,18 @@ class PyProject:
             raise MissingTaskipyTasksSectionError()
 
     @property
+    def variables(self) -> Dict[str, Task]:
+        try:
+            return self.__items['tool']['taskipy'].get('variables', {})
+        except KeyError:
+            return {}
+
+    @property
     def settings(self) -> dict:
         try:
             return self.__items['tool']['taskipy']['settings']
         except KeyError:
-            raise MissingTaskipySettingsSectionError()
+            return {}
 
     @property
     def runner(self) -> Optional[str]:
@@ -43,7 +49,7 @@ class PyProject:
                 raise InvalidRunnerTypeError()
 
             return runner.strip()
-        except (KeyError, MissingTaskipySettingsSectionError):
+        except KeyError:
             return None
 
     @staticmethod
