@@ -28,10 +28,7 @@ class Task:
         if isinstance(task_toml_contents, str):
             return False
         if isinstance(task_toml_contents, dict):
-            try:
-                value = task_toml_contents['use_vars']
-            except KeyError:
-                return False
+            value = task_toml_contents.get('use_vars', False)
             if not isinstance(value, bool):
                 raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
             return value
