@@ -57,7 +57,7 @@ class TaskRunner:
             args = []
 
         command = task.command
-        if task.use_vars or self.__project.settings.get('use_vars'):
+        if task.use_vars or self.__project.settings.get('use_vars', {}):
             try:
                 command = command.format(**self.__project.variables)
             except KeyError as e:
