@@ -8,8 +8,7 @@ from taskipy.exceptions import (
     InvalidRunnerTypeError,
     MalformedPyProjectError,
     MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError,
-    MissingTaskipySettingsSectionError
+    MissingTaskipyTasksSectionError
 )
 
 
