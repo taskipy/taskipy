@@ -2,9 +2,10 @@ import sys
 import platform
 import psutil  # type: ignore
 import signal
+import string
 import subprocess
 from pathlib import Path
-from typing import List, Union, Optional
+from typing import List, Tuple, Union, Optional
 
 from taskipy.pyproject import PyProject
 from taskipy.exceptions import TaskNotFoundError, MalformedTaskError
@@ -28,40 +29,43 @@ class TaskRunner:
         formatter = HelpFormatter(self.__project.tasks.values())
         formatter.print()
 
-    def run(self, task_name: str, args: List[str]) -> int:
+    def run(self, task_name: str, task_args: List[str]) -> int:
         try:
-            task = self.__project.tasks[task_name]
+            main_task = self.__project.tasks[task_name]
         except KeyError:
             raise TaskNotFoundError(task_name)
 
-        pre_task = self.__pre_task(task_name)
-        if pre_task is not None:
-            exit_code = self.__run_command_and_return_exit_code(pre_task)
-            if exit_code != 0:
-                return exit_code
+        tasks: List[Tuple[Optional[Task], List[str]]] = [
+            (self.__pre_task(task_name), []),
+            (main_task, task_args),
+            (self.__post_task(task_name), []),
+        ]
+        for task, args in tasks:
+            if task is None:
+                continue
 
-        exit_code = self.__run_command_and_return_exit_code(task, args)
-        if exit_code != 0:
-            return exit_code
-
-        post_task = self.__post_task(task_name)
-        if post_task is not None:
-            exit_code = self.__run_command_and_return_exit_code(post_task)
+            exit_code = self.__execute_command(task, args)
             if exit_code != 0:
                 return exit_code
 
         return 0
 
-    def __run_command_and_return_exit_code(self, task: Task, args: List[str] = None) -> int:
+    def __pre_task(self, task_name: str) -> Optional[Task]:
+        return self.__project.tasks.get(f'pre_{task_name}')
+
+    def __post_task(self, task_name: str) -> Optional[Task]:
+        return self.__project.tasks.get(f'post_{task_name}')
+
+    def __execute_command(self, task: Task, args: Optional[List[str]] = None) -> int:
         if args is None:
             args = []
 
         command = task.command
-        if task.use_vars or self.__project.settings.get('use_vars', {}):
+        if task.use_vars or self.__project.settings.get('use_vars'):
             try:
-                command = command.format(**self.__project.variables)
+                command = self.__expand_variables(command)
             except KeyError as e:
-                raise MalformedTaskError(task.name, f"{e} variable expected in [tool.taskipy.variables]")
+                raise MalformedTaskError(task.name, f'{e} variable expected in [tool.taskipy.variables]')
 
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'
@@ -93,14 +97,19 @@ class TaskRunner:
 
         return process.returncode
 
-    def __pre_task(self, task_name: str):
-        return self.__find_hooks('pre', task_name)
+    def __expand_variables(self, command: str) -> str:
+        placeholders = self.__get_format_placeholders(command)
 
-    def __post_task(self, task_name: str):
-        return self.__find_hooks('post', task_name)
+        if len(placeholders) == 0:
+            return command
 
-    def __find_hooks(self, hook_type: str, task_name: str) -> Optional[Task]:
-        try:
-            return self.__project.tasks[f'{hook_type}_{task_name}']
-        except KeyError:
-            return None
+        return self.__expand_variables(command.format(**self.__project.variables))
+
+    def __get_format_placeholders(self, format_string: str) -> List[str]:
+        placeholders = []
+
+        for result in string.Formatter().parse(format_string):
+            if result[1] is not None:
+                placeholders.append(result[1])
+
+        return placeholders

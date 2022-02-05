@@ -504,7 +504,7 @@ class UseVarsTestCase(TaskipyTestCase):
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
-        self.assertSubstr("reason: 'name' variable expected in [tool.taskipy.variables", stdout)
+        self.assertSubstr("reason: 'name' variable expected in [tool.taskipy.variables]", stdout)
         self.assertEqual(exit_code, 1)
 
     def test_use_vars_setting(self):
@@ -521,4 +521,42 @@ class UseVarsTestCase(TaskipyTestCase):
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
         self.assertSubstr('hello John Doe :', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_variables_can_be_used_within_themselves(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = true
+
+            [tool.taskipy.variables]
+            first_name = "John"
+            last_name = "Doe"
+            full_name = "{first_name} {last_name}"
+
+            [tool.taskipy.tasks]
+            echo = "echo hello {full_name}"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello John Doe', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_variables_can_be_used_within_themselves_many_levels_deep(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = true
+
+            [tool.taskipy.variables]
+            first_name = "John"
+            last_name = "Doe"
+            full_name = "{first_name} {last_name}"
+            another_name = "{full_name} another name!"
+            even_another_name = "{another_name} {full_name}"
+
+            [tool.taskipy.tasks]
+            echo = "echo hello {even_another_name}"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello John Doe another name! John Doe', stdout)
         self.assertEqual(exit_code, 0)
