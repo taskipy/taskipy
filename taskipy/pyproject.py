@@ -15,7 +15,7 @@ from taskipy.exceptions import (
 class PyProject:
     def __init__(self, base_dir: Path):
         pyproject_path = self.__find_pyproject_path(base_dir)
-        self.__items = PyProject.__load_toml_file(pyproject_path)
+        self.__items = self.__load_toml_file(pyproject_path)
 
     @property
     def tasks(self) -> Dict[str, Task]:
