@@ -504,7 +504,7 @@ class UseVarsTestCase(TaskipyTestCase):
         '''
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
-        self.assertSubstr("reason: 'name' variable expected in [pyproject.taskipy.variables", stdout)
+        self.assertSubstr("reason: 'name' variable expected in [tool.taskipy.variables", stdout)
         self.assertEqual(exit_code, 1)
 
     def test_use_vars_setting(self):
