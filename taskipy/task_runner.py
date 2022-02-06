@@ -61,7 +61,7 @@ class TaskRunner:
             try:
                 command = command.format(**self.__project.variables)
             except KeyError as e:
-                raise MalformedTaskError(task.name, f"{e} variable expected in [pyproject.taskipy.variables]")
+                raise MalformedTaskError(task.name, f"{e} variable expected in [tool.taskipy.variables]")
 
         if self.__project.runner is not None:
             command = f'{self.__project.runner} {command}'
