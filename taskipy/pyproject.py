@@ -58,7 +58,7 @@ class PyProject:
             if isinstance(file_path, str):
                 file_path = Path(file_path).resolve()
 
-            with open(file_path, "rb") as file:
+            with open(file_path, 'rb') as file:
                 return tomli.load(file)
         except FileNotFoundError:
             raise MissingPyProjectFileError()
