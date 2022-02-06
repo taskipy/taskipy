@@ -1,4 +1,4 @@
-import toml
+import tomli
 
 from pathlib import Path
 from typing import Any, Dict, MutableMapping, Optional, Union
@@ -58,11 +58,12 @@ class PyProject:
             if isinstance(file_path, str):
                 file_path = Path(file_path).resolve()
 
-            return toml.load(file_path)
+            with open(file_path, "rb") as file:
+                return tomli.load(file)
         except FileNotFoundError:
             raise MissingPyProjectFileError()
-        except toml.TomlDecodeError:
-            raise MalformedPyProjectError()
+        except tomli.TOMLDecodeError as e:
+            raise MalformedPyProjectError(reason=str(e))
 
     @staticmethod
     def __find_pyproject_path(base_dir: Path) -> Path:
