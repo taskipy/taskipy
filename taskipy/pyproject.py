@@ -10,6 +10,7 @@ from taskipy.exceptions import (
     MissingPyProjectFileError,
     MissingTaskipyTasksSectionError
 )
+from taskipy.variable import Variable
 
 
 class PyProject:
@@ -20,18 +21,35 @@ class PyProject:
     @property
     def tasks(self) -> Dict[str, Task]:
         try:
-            return {
-                task_name: Task(task_name, task_toml_contents) for
-                task_name, task_toml_contents in self.__items['tool']['taskipy']['tasks'].items() }
+            toml_tasks = self.__items['tool']['taskipy']['tasks'].items()
         except KeyError:
             raise MissingTaskipyTasksSectionError()
 
+        tasks = {}
+        for name, toml_contents in toml_tasks:
+            tasks[name] = Task(name, toml_contents)
+
+        return tasks
+
     @property
-    def variables(self) -> Dict[str, Task]:
+    def variables(self) -> Dict[str, Variable]:
         try:
-            return self.__items['tool']['taskipy'].get('variables', {})
+            toml_vars = self.__items['tool']['taskipy'].get('variables', {})
         except KeyError:
             return {}
+
+        vars_dict = {}
+        for name, toml_contents in toml_vars.items():
+            if isinstance(toml_contents, str):
+                vars_dict[name] = Variable(name, toml_contents, recursive=False)
+            elif toml_contents.get('var') or toml_contents.get('recursive'):
+                vars_dict[name] = Variable(
+                    name,
+                    toml_contents.get('var'),
+                    toml_contents.get('recursive', False),
+                )
+
+        return vars_dict
 
     @property
     def settings(self) -> dict:
@@ -71,8 +89,10 @@ class PyProject:
             yield base
             for parent in base.parents:
                 yield parent
+
         for candidate_dir in candidate_dirs(base_dir):
             pyproject = candidate_dir / 'pyproject.toml'
             if pyproject.exists():
                 return pyproject
+
         raise MissingPyProjectFileError()

@@ -523,6 +523,8 @@ class UseVarsTestCase(TaskipyTestCase):
         self.assertSubstr('hello John Doe :', stdout)
         self.assertEqual(exit_code, 0)
 
+
+class RecursiveVariablesTestCase(TaskipyTestCase):
     def test_variables_can_be_used_within_themselves(self):
         py_project_toml = '''
             [tool.taskipy.settings]
@@ -531,7 +533,7 @@ class UseVarsTestCase(TaskipyTestCase):
             [tool.taskipy.variables]
             first_name = "John"
             last_name = "Doe"
-            full_name = "{first_name} {last_name}"
+            full_name = { var = "{first_name} {last_name}", recursive = true }
 
             [tool.taskipy.tasks]
             echo = "echo hello {full_name}"
@@ -549,9 +551,9 @@ class UseVarsTestCase(TaskipyTestCase):
             [tool.taskipy.variables]
             first_name = "John"
             last_name = "Doe"
-            full_name = "{first_name} {last_name}"
-            another_name = "{full_name} another name!"
-            even_another_name = "{another_name} {full_name}"
+            full_name = { var = "{first_name} {last_name}", recursive = true }
+            another_name = { var = "{full_name} another name!", recursive = true }
+            even_another_name = { var = "{another_name} {full_name}", recursive = true }
 
             [tool.taskipy.tasks]
             echo = "echo hello {even_another_name}"
@@ -560,3 +562,20 @@ class UseVarsTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
         self.assertSubstr('hello John Doe another name! John Doe', stdout)
         self.assertEqual(exit_code, 0)
+
+    def test_error_is_raised_if_a_cycle_is_detected(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = true
+
+            [tool.taskipy.variables]
+            last_name = { var = "{first_name}", recursive = true }
+            first_name = { var = "{last_name}", recursive = true }
+
+            [tool.taskipy.tasks]
+            echo = "echo hello {first_name} {last_name}!"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('cannot resolve variables, found variables that depend on each other', stdout)
+        self.assertEqual(exit_code, 127)

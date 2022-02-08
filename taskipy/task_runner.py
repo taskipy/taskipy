@@ -2,15 +2,15 @@ import sys
 import platform
 import psutil  # type: ignore
 import signal
-import string
 import subprocess
 from pathlib import Path
-from typing import List, Tuple, Union, Optional
+from typing import Dict, List, Tuple, Union, Optional
 
 from taskipy.pyproject import PyProject
-from taskipy.exceptions import TaskNotFoundError, MalformedTaskError
+from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
 from taskipy.task import Task
 from taskipy.help import HelpFormatter
+from taskipy.variable import Variable
 
 if platform.system() == 'Windows':
     import mslex as shlex  # type: ignore # pylint: disable=E0401
@@ -63,7 +63,7 @@ class TaskRunner:
         command = task.command
         if task.use_vars or self.__project.settings.get('use_vars'):
             try:
-                command = self.__expand_variables(command)
+                command = self.__resolve_variables(command)
             except KeyError as e:
                 raise MalformedTaskError(task.name, f'{e} variable expected in [tool.taskipy.variables]')
 
@@ -97,19 +97,36 @@ class TaskRunner:
 
         return process.returncode
 
-    def __expand_variables(self, command: str) -> str:
-        placeholders = self.__get_format_placeholders(command)
+    def __resolve_variables(self, command: str) -> str:
+        types = self.__get_variable_types(self.__project.variables)
+        resolved_vars = types["nonrecursive"]
+        recursive_vars = types["recursive"]
 
-        if len(placeholders) == 0:
-            return command
+        while len(recursive_vars) > 0:
+            resolved_count = len(resolved_vars)
 
-        return self.__expand_variables(command.format(**self.__project.variables))
+            for name, value in recursive_vars.copy().items():
+                try:
+                    resolved_vars[name] = value.format(**resolved_vars)
+                    recursive_vars.pop(name)
+                except KeyError:
+                    pass
 
-    def __get_format_placeholders(self, format_string: str) -> List[str]:
-        placeholders = []
+            if resolved_count == len(resolved_vars):
+                raise CircularVariableError()
 
-        for result in string.Formatter().parse(format_string):
-            if result[1] is not None:
-                placeholders.append(result[1])
+        return command.format(**resolved_vars)
 
-        return placeholders
+    def __get_variable_types(self, variables: Dict[str, Variable]) -> Dict[str, Dict[str, str]]:
+        var_types: Dict[str, Dict[str, str]] = {
+            "nonrecursive": {},
+            "recursive": {}
+        }
+
+        for name, var in variables.items():
+            if var.recursive:
+                var_types["recursive"][name] = var.value
+            else:
+                var_types["nonrecursive"][name] = var.value
+
+        return var_types

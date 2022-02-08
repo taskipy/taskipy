@@ -79,3 +79,10 @@ class MissingTaskipyTasksSectionError(TaskipyError):
             'no tasks found. add a [tool.taskipy.tasks] '
             'section to your pyproject.toml'
         )
+
+
+class CircularVariableError(TaskipyError):
+    exit_code = 127
+
+    def __str__(self):
+        return 'cannot resolve variables, found variables that depend on each other.'
