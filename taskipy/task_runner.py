@@ -103,7 +103,7 @@ class TaskRunner:
         recursive_vars = types["recursive"]
 
         while len(recursive_vars) > 0:
-            resolved_count = len(resolved_vars)
+            count_of_previously_resolved_vars = len(resolved_vars)
 
             for name, value in recursive_vars.copy().items():
                 try:
@@ -112,7 +112,7 @@ class TaskRunner:
                 except KeyError:
                     pass
 
-            if resolved_count == len(resolved_vars):
+            if count_of_previously_resolved_vars == len(resolved_vars):
                 raise CircularVariableError()
 
         return command.format(**resolved_vars)
