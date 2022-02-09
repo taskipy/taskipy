@@ -29,22 +29,25 @@ class TaskRunner:
         formatter = HelpFormatter(self.__project.tasks.values())
         formatter.print()
 
-    def run(self, task_name: str, task_args: List[str]) -> int:
+    def run(self, task_name: str, args: List[str]) -> int:
         try:
-            main_task = self.__project.tasks[task_name]
+            task = self.__project.tasks[task_name]
         except KeyError:
             raise TaskNotFoundError(task_name)
 
-        tasks: List[Tuple[Optional[Task], List[str]]] = [
-            (self.__pre_task(task_name), []),
-            (main_task, task_args),
-            (self.__post_task(task_name), []),
-        ]
-        for task, args in tasks:
-            if task is None:
-                continue
+        pre_task = self.__pre_task(task_name)
+        if pre_task is not None:
+            exit_code = self.__run_command_and_return_exit_code(pre_task)
+            if exit_code != 0:
+                return exit_code
 
-            exit_code = self.__execute_command(task, args)
+        exit_code = self.__run_command_and_return_exit_code(task, args)
+        if exit_code != 0:
+            return exit_code
+
+        post_task = self.__post_task(task_name)
+        if post_task is not None:
+            exit_code = self.__run_command_and_return_exit_code(post_task)
             if exit_code != 0:
                 return exit_code
 
@@ -56,7 +59,7 @@ class TaskRunner:
     def __post_task(self, task_name: str) -> Optional[Task]:
         return self.__project.tasks.get(f'post_{task_name}')
 
-    def __execute_command(self, task: Task, args: Optional[List[str]] = None) -> int:
+    def __run_command_and_return_exit_code(self, task: Task, args: Optional[List[str]] = None) -> int:
         if args is None:
             args = []
 
@@ -98,35 +101,35 @@ class TaskRunner:
         return process.returncode
 
     def __resolve_variables(self, command: str) -> str:
-        types = self.__get_variable_types(self.__project.variables)
-        resolved_vars = types["nonrecursive"]
-        recursive_vars = types["recursive"]
+        nonrecursive_vars, recursive_vars = self.__get_variable_types(
+            self.__project.variables
+        )
 
         while len(recursive_vars) > 0:
-            count_of_previously_resolved_vars = len(resolved_vars)
+            count_of_previously_resolved_vars = len(nonrecursive_vars)  # pylint: disable=C0103
 
             for name, value in recursive_vars.copy().items():
                 try:
-                    resolved_vars[name] = value.format(**resolved_vars)
+                    nonrecursive_vars[name] = value.format(**nonrecursive_vars)
                     recursive_vars.pop(name)
                 except KeyError:
                     pass
 
-            if count_of_previously_resolved_vars == len(resolved_vars):
+            if count_of_previously_resolved_vars == len(nonrecursive_vars):
                 raise CircularVariableError()
 
-        return command.format(**resolved_vars)
+        return command.format(**nonrecursive_vars)
 
-    def __get_variable_types(self, variables: Dict[str, Variable]) -> Dict[str, Dict[str, str]]:
-        var_types: Dict[str, Dict[str, str]] = {
-            "nonrecursive": {},
-            "recursive": {}
-        }
+    def __get_variable_types(
+        self, variables: Dict[str, Variable]
+    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        nonrecursive_vars = {}
+        recursive_vars = {}
 
         for name, var in variables.items():
             if var.recursive:
-                var_types["recursive"][name] = var.value
+                recursive_vars[name] = var.value
             else:
-                var_types["nonrecursive"][name] = var.value
+                nonrecursive_vars[name] = var.value
 
-        return var_types
+        return nonrecursive_vars, recursive_vars
