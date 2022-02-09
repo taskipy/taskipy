@@ -16,6 +16,7 @@
   - [Using Variables](#using-variables)
     - [String Formatting](#string-formatting)
     - [Always Use Variables](#always-use-variables)
+    - [Recursive Variables](#recursive-variables)
   - [Using Taskipy Without Poetry](#using-taskipy-without-poetry)
     - [Installing With PIP](#installing-with-pip)
     - [Running Tasks](#running-tasks-1)
