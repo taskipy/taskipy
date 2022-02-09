@@ -525,7 +525,7 @@ class UseVarsTestCase(TaskipyTestCase):
 
 
 class RecursiveVariablesTestCase(TaskipyTestCase):
-    def test_variables_can_be_used_within_themselves(self):
+    def test_recursive_variables_can_use_other_variables(self):
         py_project_toml = '''
             [tool.taskipy.settings]
             use_vars = true
