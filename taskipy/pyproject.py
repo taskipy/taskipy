@@ -38,7 +38,7 @@ class PyProject:
         except KeyError:
             return {}
 
-        vars_dict = {}
+        vars_dict: Dict[str, Variable] = {}
         for name, toml_contents in toml_vars.items():
             if isinstance(toml_contents, str):
                 vars_dict[name] = Variable(name, toml_contents, recursive=False)
