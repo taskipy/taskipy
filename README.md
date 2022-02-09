@@ -258,6 +258,24 @@ lint = "pylint {path}"
 black = "black {path}"
 ```
 
+#### Recursive Variables
+
+If we want to use variables within other variables, we can utilize recursive variables. By default, variables are not recursive, but we can specify a variable to be recursive by setting the `recursive` key to `true`.
+
+```toml
+[tool.taskipy.settings]
+use_vars = true
+
+[tool.taskipy.variables]
+src_dir = "src"
+package_dir = { var = "{src_dir}/package", recursive = true }
+
+[tool.taskipy.tasks]
+echo = "echo {package_dir}"
+```
+
+In this example, we could run `task echo` and we would then see `src/package`.
+
 ### Using Taskipy Without Poetry
 
 Taskipy was created with poetry projects in mind, but actually only requires a valid `pyproject.toml` file in your project's directory. As a result, you can use it even eithout poetry:
