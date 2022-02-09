@@ -579,3 +579,22 @@ class RecursiveVariablesTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
         self.assertSubstr('cannot resolve variables, found variables that depend on each other', stdout)
         self.assertEqual(exit_code, 127)
+
+    def test_non_recursive_variables_cant_use_other_variables(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = true
+
+            [tool.taskipy.variables]
+            first_name = "John"
+            last_name = "Doe"
+            full_name_1 = "{first_name} {last_name}"
+            full_name_2 = { var = "{first_name} {last_name}", recursive = false }
+
+            [tool.taskipy.tasks]
+            echo = "echo full_name_1: {full_name_1} full_name_2: {full_name_2}!"
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('full_name_1: {first_name} {last_name} full_name_2: {first_name} {last_name}', stdout)
+        self.assertEqual(exit_code, 0)
