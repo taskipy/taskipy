@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from typing import Optional
 
 class TaskipyError(Exception):
     exit_code = 1
@@ -18,8 +19,17 @@ class MissingPyProjectFileError(TaskipyError):
 
 
 class MalformedPyProjectError(TaskipyError):
+    def __init__(self, reason: Optional[str] = None):
+        super().__init__()
+        self.reason = reason
+
     def __str__(self):
-        return 'pyproject.toml file is malformed and could not be read'
+        message = 'pyproject.toml file is malformed and could not be read'
+
+        if self.reason:
+            message += f'. reason: {self.reason}'
+
+        return message
 
 
 class TaskNotFoundError(TaskipyError):
