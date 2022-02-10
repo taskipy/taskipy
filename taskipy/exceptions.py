@@ -86,3 +86,15 @@ class CircularVariableError(TaskipyError):
 
     def __str__(self):
         return 'cannot resolve variables, found variables that depend on each other.'
+
+
+class InvalidVariableError(TaskipyError):
+    exit_code = 127
+
+    def __init__(self, variable: str, reason: str) -> None:
+        super().__init__()
+        self.variable = variable
+        self.reason = reason
+
+    def __str__(self):
+        return f'variable {self.variable} is invalid. reason: {self.reason}'

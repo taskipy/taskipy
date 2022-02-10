@@ -5,9 +5,11 @@ import subprocess
 import time
 import unittest
 import warnings
-import psutil  # type: ignore
 from os import path
 from typing import List, Tuple
+
+from parameterized import parameterized  # type: ignore
+import psutil  # type: ignore
 
 from tests.utils.project import (
     GenerateProjectFromFixture,
@@ -598,3 +600,88 @@ class RecursiveVariablesTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
         self.assertSubstr('full_name_1: {first_name} {last_name} full_name_2: {first_name} {last_name}', stdout)
         self.assertEqual(exit_code, 0)
+
+
+class VariableSchemaTestCase(TaskipyTestCase):
+    def test_variables_can_be_strings(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = "John"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {name}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('John', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_variables_can_be_a_table_with_var_key_and_no_recursive_key(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = { var = "John" }
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {name}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('John', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_variables_can_be_a_table_with_var_key_and_recursive_key(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            name = { var = "John", recursive = true }
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {name}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('John', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_variable_table_by_default_is_not_recursive(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            test = "test var"
+            name = { var = "{test}" }
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {name}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('{test}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_regular_string_variable_are_not_recursive(self):
+        py_project_toml = '''
+            [tool.taskipy.variables]
+            test = "test var"
+            name = "{test}"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {name}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('{test}', stdout)
+        self.assertEqual(exit_code, 0)
+
+    @parameterized.expand([(5,), (5.5, ), ([], ), ("false",), ({},)])
+    def test_other_variable_schemas_are_rejected_with_invalid_variable_error(
+        self, value
+    ):
+        py_project_toml = f'''
+            [tool.taskipy.variables]
+            test = {value}
+        ''' + '''
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo {test}", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('variable test is invalid', stdout)
+        self.assertEqual(exit_code, 127)

@@ -6,9 +6,10 @@ from typing import Any, Dict, MutableMapping, Optional, Union
 from taskipy.task import Task
 from taskipy.exceptions import (
     InvalidRunnerTypeError,
+    InvalidVariableError,
     MalformedPyProjectError,
     MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError
+    MissingTaskipyTasksSectionError,
 )
 from taskipy.variable import Variable
 
@@ -42,11 +43,20 @@ class PyProject:
         for name, toml_contents in toml_vars.items():
             if isinstance(toml_contents, str):
                 vars_dict[name] = Variable(name, toml_contents, recursive=False)
-            elif toml_contents.get('var') or toml_contents.get('recursive'):
+            elif (
+                isinstance(toml_contents, dict)
+                and isinstance(toml_contents.get('var'), str)
+            ):
                 vars_dict[name] = Variable(
                     name,
-                    toml_contents.get('var'),
+                    toml_contents['var'],
                     toml_contents.get('recursive', False),
+                )
+            else:
+                raise InvalidVariableError(
+                    name,
+                    f'expected variable to contain a string or be a table '
+                    f'with a string "var" key, got {toml_contents}.'
                 )
 
         return vars_dict
