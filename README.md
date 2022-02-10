@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" width="150" />
+  <img src="https://github.com/illBeRoy/taskipy/raw/master/logo.svg" width="150" />
 </p>
 
 - [General](#general)
