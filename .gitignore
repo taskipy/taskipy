@@ -24,3 +24,4 @@ MANIFEST
 .mypy_cache
 .idea
 .python-version
+.DS_Store
