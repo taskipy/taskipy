@@ -169,7 +169,7 @@ class TaskRunner:
         return process.returncode
 
     def __send_signal_to_task_process(
-        self, process: subprocess.Popen[bytes]
+        self, process: subprocess.Popen
     ) -> Callable[[int, Optional[FrameType]], None]:
         def signal_handler(signum: int, _frame):
             # pylint: disable=W0640
