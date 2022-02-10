@@ -56,7 +56,8 @@ class PyProject:
                 raise InvalidVariableError(
                     name,
                     f'expected variable to contain a string or be a table '
-                    f'with a string "var" key, got {toml_contents}.'
+                    'with a key "var" that contains a string value, got '
+                    f'{toml_contents}.'
                 )
 
         return vars_dict
