@@ -4,34 +4,63 @@ from pathlib import Path
 from typing import Any, Dict, MutableMapping, Optional, Union
 
 from taskipy.task import Task
+from taskipy.variable import Variable
 from taskipy.exceptions import (
     InvalidRunnerTypeError,
+    InvalidVariableError,
     MalformedPyProjectError,
     MissingPyProjectFileError,
-    MissingTaskipyTasksSectionError
+    MissingTaskipyTasksSectionError,
 )
 
 
 class PyProject:
     def __init__(self, base_dir: Path):
-        pyproject_path = self.__find_pyproject_path(base_dir)
+        pyproject_path = PyProject.__find_pyproject_path(base_dir)
         self.__items = PyProject.__load_toml_file(pyproject_path)
 
     @property
     def tasks(self) -> Dict[str, Task]:
         try:
-            return {
-                task_name: Task(task_name, task_toml_contents) for
-                task_name, task_toml_contents in self.__items['tool']['taskipy']['tasks'].items() }
+            toml_tasks = self.__items['tool']['taskipy']['tasks'].items()
         except KeyError:
             raise MissingTaskipyTasksSectionError()
 
+        tasks = {}
+        for name, toml_contents in toml_tasks:
+            tasks[name] = Task(name, toml_contents)
+
+        return tasks
+
     @property
-    def variables(self) -> Dict[str, Task]:
+    def variables(self) -> Dict[str, Variable]:
         try:
-            return self.__items['tool']['taskipy'].get('variables', {})
+            toml_vars = self.__items['tool']['taskipy'].get('variables', {})
         except KeyError:
             return {}
+
+        vars_dict: Dict[str, Variable] = {}
+        for name, toml_contents in toml_vars.items():
+            if isinstance(toml_contents, str):
+                vars_dict[name] = Variable(name, toml_contents, recursive=False)
+            elif (
+                isinstance(toml_contents, dict)
+                and isinstance(toml_contents.get('var'), str)
+            ):
+                vars_dict[name] = Variable(
+                    name,
+                    toml_contents['var'],
+                    toml_contents.get('recursive', False),
+                )
+            else:
+                raise InvalidVariableError(
+                    name,
+                    f'expected variable to contain a string or be a table '
+                    'with a key "var" that contains a string value, got '
+                    f'{toml_contents}.'
+                )
+
+        return vars_dict
 
     @property
     def settings(self) -> dict:
@@ -71,8 +100,10 @@ class PyProject:
             yield base
             for parent in base.parents:
                 yield parent
+
         for candidate_dir in candidate_dirs(base_dir):
             pyproject = candidate_dir / 'pyproject.toml'
             if pyproject.exists():
                 return pyproject
+
         raise MissingPyProjectFileError()
