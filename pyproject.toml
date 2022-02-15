@@ -21,7 +21,10 @@ task = 'taskipy.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.6"
-tomli = "^1.2.3"
+tomli = [
+    { version = "^2.0.1", python = "^3.7" },
+    { version = "^1.2.3", python = "~3.6" }
+]
 psutil = "^5.7.2"
 mslex = { version = "^0.3.0", markers = "sys_platform == 'win32'" }
 colorama = "^0.4.4"
