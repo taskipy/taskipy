@@ -6,8 +6,8 @@ from typing import Dict, List, Tuple
 
 class TomliInstallTestCase(unittest.TestCase):
     def test_correct_tomli_version_installed(self):
-        python_major, python_minor = self._get_current_python_version()
-        packages = self._get_installed_pip_packages()
+        python_major, python_minor = self.__get_current_python_version()
+        packages = self.__get_installed_pip_packages()
         tomli_version = packages.get('tomli')
         v1_regex = r'1.[0-9]+.[0-9]+'
         v2_regex = r'2.[0-9]+.[0-9]+'
@@ -19,12 +19,12 @@ class TomliInstallTestCase(unittest.TestCase):
         else:
             self.fail("Executed with invalid Python version")
 
-    def _get_current_python_version(self) -> Tuple[int, int]:
+    def __get_current_python_version(self) -> Tuple[int, int]:
         python_version = sys.version_info
 
         return python_version.major, python_version.minor
 
-    def _get_installed_pip_packages(self) -> Dict[str, str]:
+    def __get_installed_pip_packages(self) -> Dict[str, str]:
         cmd = "pip list"
         process = subprocess.Popen(
             cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -37,7 +37,7 @@ class TomliInstallTestCase(unittest.TestCase):
             )
 
         result = {}
-        packages = self._remove_pip_list_table_header(stdout.splitlines())
+        packages = self.__remove_pip_list_table_header(stdout.splitlines())
         for package in packages:
             decoded_package = package.decode('utf-8')
             name, version = decoded_package.split()
@@ -45,5 +45,5 @@ class TomliInstallTestCase(unittest.TestCase):
 
         return result
 
-    def _remove_pip_list_table_header(self, lines: List[bytes]) -> List[bytes]:
+    def __remove_pip_list_table_header(self, lines: List[bytes]) -> List[bytes]:
         return lines[2:]
