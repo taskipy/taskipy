@@ -221,6 +221,24 @@ class ListTasksTestCase(TaskipyTestCase):
         self.assertTerminalTextEqual(expected, stdout.strip())
         self.assertEqual(exit_code, 0)
 
+    def test_running_task_list_no_tasks(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
+
+        self.assertTerminalTextEqual('no tasks found. create your first task by adding it to your pyproject.toml file under [tool.taskipy.tasks]', stdout.strip())
+        self.assertEqual(exit_code, 127)
+
+    def test_running_task_list_no_tasks_section(self):
+        py_project_toml = ''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('--list', cwd=cwd)
+
+        self.assertTerminalTextEqual('no tasks found. add a [tool.taskipy.tasks] section to your pyproject.toml', stdout.strip())
+        self.assertEqual(exit_code, 127)
+
 
 class TaskDescriptionTestCase(TaskipyTestCase):
     def test_running_task_with_description(self):

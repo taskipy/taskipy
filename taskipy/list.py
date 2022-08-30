@@ -4,14 +4,18 @@ import colorama # type: ignore
 from typing import List
 
 from taskipy.task import Task
+from taskipy.exceptions import EmptyTasksSectionError
 
 
-class HelpFormatter:
+class TasksListFormatter:
     def __init__(self, tasks: List[Task]):
         self.__tasks = tasks
 
     def print(self, line_width=shutil.get_terminal_size().columns):
         colorama.init()
+
+        if not self.__tasks:
+            raise EmptyTasksSectionError()
 
         tasks_col = [task.name for task in self.__tasks]
         longest_item_in_tasks_col = len(max(tasks_col, key=len))

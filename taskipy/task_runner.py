@@ -9,7 +9,7 @@ from typing import Callable, Dict, List, Tuple, Union, Optional
 import psutil  # type: ignore
 
 from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
-from taskipy.help import HelpFormatter
+from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
 from taskipy.task import Task
 from taskipy.variable import Variable
@@ -28,7 +28,7 @@ class TaskRunner:
 
     def list(self):
         """lists tasks to stdout"""
-        formatter = HelpFormatter(self.__project.tasks.values())
+        formatter = TasksListFormatter(self.__project.tasks.values())
         formatter.print()
 
     def run(self, task_name: str, args: List[str]) -> int:
