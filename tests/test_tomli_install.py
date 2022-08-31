@@ -41,7 +41,8 @@ class TomliInstallTestCase(unittest.TestCase):
         print('#### DEBUG DATA ####')
         for package in packages:
             decoded_package = package.decode('utf-8')
-            print(package)
+            print(decoded_package)
+            print(decoded_package.split())
             name, version = decoded_package.split()
             result[name] = version
 
