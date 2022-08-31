@@ -81,6 +81,16 @@ class MissingTaskipyTasksSectionError(TaskipyError):
         )
 
 
+class EmptyTasksSectionError(TaskipyError):
+    exit_code = 127
+
+    def __str__(self):
+        return (
+            'no tasks found. create your first task '
+            'by adding it to your pyproject.toml file under [tool.taskipy.tasks]'
+        )
+
+
 class CircularVariableError(TaskipyError):
     exit_code = 127
 
