@@ -38,8 +38,10 @@ class TomliInstallTestCase(unittest.TestCase):
 
         result = {}
         packages = self.__remove_pip_list_table_header(stdout.splitlines())
+        print('#### DEBUG DATA ####')
         for package in packages:
             decoded_package = package.decode('utf-8')
+            print(package)
             name, version = decoded_package.split()
             result[name] = version
 
