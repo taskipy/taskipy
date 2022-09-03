@@ -1,10 +1,11 @@
 import shutil
 import textwrap
-import colorama # type: ignore
 from typing import List
 
-from taskipy.task import Task
+import colorama  # type: ignore
+
 from taskipy.exceptions import EmptyTasksSectionError
+from taskipy.task import Task
 
 
 class TasksListFormatter:

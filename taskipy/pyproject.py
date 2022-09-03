@@ -1,10 +1,8 @@
-import tomli
-
 from pathlib import Path
 from typing import Any, Dict, MutableMapping, Optional, Union
 
-from taskipy.task import Task
-from taskipy.variable import Variable
+import tomli
+
 from taskipy.exceptions import (
     InvalidRunnerTypeError,
     InvalidVariableError,
@@ -12,6 +10,8 @@ from taskipy.exceptions import (
     MissingPyProjectFileError,
     MissingTaskipyTasksSectionError,
 )
+from taskipy.task import Task
+from taskipy.variable import Variable
 
 
 class PyProject:

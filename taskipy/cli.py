@@ -3,7 +3,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from taskipy.exceptions import TaskipyError, InvalidUsageError
+from taskipy.exceptions import InvalidUsageError, TaskipyError
 from taskipy.task_runner import TaskRunner
 
 

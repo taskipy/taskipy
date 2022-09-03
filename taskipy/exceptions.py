@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from typing import Optional
 
+
 class TaskipyError(Exception):
     exit_code = 1
 

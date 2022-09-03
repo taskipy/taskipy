@@ -1,8 +1,9 @@
-import tempfile
-import shutil
 import os
-from os import path
+import shutil
+import tempfile
 from abc import abstractmethod
+from os import path
+
 
 class ProjectDirGenerator:
     @abstractmethod

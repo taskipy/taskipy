@@ -8,13 +8,13 @@ import warnings
 from os import path
 from typing import List, Tuple
 
-from parameterized import parameterized  # type: ignore
 import psutil  # type: ignore
+from parameterized import parameterized  # type: ignore
 
 from tests.utils.project import (
     GenerateProjectFromFixture,
     GenerateProjectWithPyProjectToml,
-    TempProjectDir
+    TempProjectDir,
 )
 
 

@@ -1,14 +1,18 @@
-import sys
 import platform
 import signal
 import subprocess
+import sys
 from pathlib import Path
 from types import FrameType
-from typing import Callable, Dict, List, Tuple, Union, Optional
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import psutil  # type: ignore
 
-from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
+from taskipy.exceptions import (
+    CircularVariableError,
+    MalformedTaskError,
+    TaskNotFoundError,
+)
 from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
 from taskipy.task import Task
