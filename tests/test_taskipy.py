@@ -1,3 +1,4 @@
+import inspect
 import os
 import random
 import signal
@@ -8,8 +9,10 @@ import warnings
 from os import path
 from typing import List, Tuple
 
-from parameterized import parameterized  # type: ignore
+import colorama  # type: ignore
 import psutil  # type: ignore
+from parameterized import parameterized  # type: ignore
+from ptyprocess import PtyProcessUnicode  # type: ignore
 
 from tests.utils.project import (
     GenerateProjectFromFixture,
@@ -21,6 +24,7 @@ from tests.utils.project import (
 class TaskipyTestCase(unittest.TestCase):
     def setUp(self):
         self._tmp_dirs: List[TempProjectDir] = []
+        self._ansi_codes_cache: List[str] = []
 
     def tearDown(self):
         for tmp_dir in self._tmp_dirs:
@@ -71,6 +75,31 @@ class TaskipyTestCase(unittest.TestCase):
         expected_without_ansi_chars = expected.encode('ascii', 'ignore')
         actual_without_ansi_chars = actual.encode('ascii', 'ignore')
         self.assertEqual(expected_without_ansi_chars, actual_without_ansi_chars)
+
+    def has_ansi_colors(self, output: str) -> bool:
+        for code in self._get_ansi_codes():
+            if code in output:
+                return True
+
+        return False
+
+    def _get_ansi_codes(self) -> List[str]:
+        if not self._ansi_codes_cache:
+            codes = []
+            ansi_code_types = [
+                colorama.Fore,
+                colorama.Back,
+                colorama.Style,
+            ]
+
+            for code_type in ansi_code_types:
+                for name, value in inspect.getmembers(code_type):
+                    if not name.startswith('_'):
+                        codes.append(value)
+
+            self._ansi_codes_cache = codes
+
+        return self._ansi_codes_cache
 
 
 class RunTaskTestCase(TaskipyTestCase):
@@ -238,6 +267,18 @@ class ListTasksTestCase(TaskipyTestCase):
 
         self.assertTerminalTextEqual('no tasks found. add a [tool.taskipy.tasks] section to your pyproject.toml', stdout.strip())
         self.assertEqual(exit_code, 127)
+
+    def test_output_has_no_color(self):
+        try:
+            os.environ['NO_COLOR'] = 'true'
+            cwd = self.create_test_dir_from_fixture('project_with_tasks_to_list')
+
+            process = PtyProcessUnicode.spawn([path.abspath('task'), '--list'], cwd=cwd)
+
+            self.assertFalse(self.has_ansi_colors(process.read()))
+        finally:
+            del os.environ['NO_COLOR']
+            process.close()
 
 
 class TaskDescriptionTestCase(TaskipyTestCase):

@@ -34,6 +34,7 @@ pylint = "^2.4.4"
 mypy = "^0.812"
 rope = "^0.14.0"
 parameterized = "^0.8.1"
+ptyprocess = "^0.7.0"
 
 [tool.taskipy.tasks]
 test = { cmd = "python -m unittest -v tests/test_*.py", help = "runs all tests" }

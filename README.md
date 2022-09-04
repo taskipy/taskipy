@@ -125,6 +125,8 @@ test                runs all unit tests
 lint                confirms code style using pylint
 ```
 
+By default, taskipy will show a colored output for the task list. If you'd like to turn that off, the [NO_COLOR](https://no-color.org/) environment variable is supported. As long as it is set and not an empty string, the ansi colors will not be rendered.
+
 ### Passing Command Line Args to Tasks
 
 If you want to pass command line arguments to tasks (positional or named), simply append them to the end of the task command.

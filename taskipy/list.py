@@ -1,3 +1,4 @@
+import os
 import shutil
 import textwrap
 import colorama # type: ignore
@@ -12,7 +13,10 @@ class TasksListFormatter:
         self.__tasks = tasks
 
     def print(self, line_width=shutil.get_terminal_size().columns):
-        colorama.init()
+        if os.getenv('NO_COLOR'):
+            colorama.init(convert=False, strip=True)
+        else:
+            colorama.init()
 
         if not self.__tasks:
             raise EmptyTasksSectionError()
