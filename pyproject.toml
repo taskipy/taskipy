@@ -31,7 +31,7 @@ colorama = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.4.4"
-mypy = "^0.812"
+mypy = "^0.971"
 rope = "^0.14.0"
 parameterized = "^0.8.1"
 
