@@ -6,7 +6,7 @@ import time
 import unittest
 import warnings
 from os import path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from parameterized import parameterized  # type: ignore
 import psutil  # type: ignore
@@ -26,12 +26,23 @@ class TaskipyTestCase(unittest.TestCase):
         for tmp_dir in self._tmp_dirs:
             tmp_dir.clean()
 
-    def run_task(self, task: str, args: List[str] = None, cwd=os.curdir) -> Tuple[int, str, str]:
+    def run_task(
+        self,
+        task: str,
+        args: Optional[List[str]] = None,
+        cwd=os.curdir,
+    ) -> Tuple[int, str, str]:
+        args = args or []
         proc = self.start_taskipy_process(task, args=args, cwd=cwd)
         stdout, stderr = proc.communicate()
         return proc.returncode, stdout.decode(), str(stderr)
 
-    def start_taskipy_process(self, task: str, args: List[str] = None, cwd=os.curdir) -> subprocess.Popen:
+    def start_taskipy_process(
+        self,
+        task: str,
+        args: Optional[List[str]] = None,
+        cwd=os.curdir,
+    ) -> subprocess.Popen:
         executable_path = path.abspath('task')
         args = args or []
         return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
