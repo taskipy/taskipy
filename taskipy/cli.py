@@ -13,7 +13,15 @@ def main():
     sys.exit(exit_code)
 
 
-def run(args: List[str]):
+def run(args: List[str]) -> int:
+    """Run the taskipy CLI programmatically.
+    
+    Args:
+        args: The arguments passed to the taskipy CLI.
+
+    Returns:
+        0 on success; > 0 for an error.
+    """
     parser = argparse.ArgumentParser(
         prog='task',
         description='runs a task specified in your pyproject.toml under [tool.taskipy.tasks]',
