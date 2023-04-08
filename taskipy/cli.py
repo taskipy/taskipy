@@ -9,7 +9,7 @@ from taskipy.task_runner import TaskRunner
 
 
 def main():
-    exit_code = run(sys.argv)
+    exit_code = run(sys.argv[1:])
     sys.exit(exit_code)
 
 
