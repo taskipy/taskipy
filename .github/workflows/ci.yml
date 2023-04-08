@@ -34,6 +34,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
     - name: Install dependencies
-      run: poetry lock && poetry install
+      run: poetry install
     - name: Test
       run: poetry run task test
