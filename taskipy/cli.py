@@ -29,19 +29,19 @@ def run(args: List[str]) -> int:
     parser.add_argument('-l', '--list', help='show list of available tasks', action='store_true')
     parser.add_argument('name', help='name of the task', nargs='?')
     parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
-    args = parser.parse_args()
+    parsed_args = parser.parse_args(args=args)
 
     try:
         runner = TaskRunner(Path.cwd())
 
-        if args.list:
+        if parsed_args.list:
             runner.list()
             return 0
 
-        if args.name is None:
+        if parsed_args.name is None:
             raise InvalidUsageError(parser)
 
-        return runner.run(args.name, args.args)
+        return runner.run(parsed_args.name, parsed_args.args)
     except TaskipyError as e:
         print(e)
         return e.exit_code
