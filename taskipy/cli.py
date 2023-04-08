@@ -2,12 +2,18 @@
 import argparse
 import sys
 from pathlib import Path
+from typing import List
 
 from taskipy.exceptions import TaskipyError, InvalidUsageError
 from taskipy.task_runner import TaskRunner
 
 
 def main():
+    exit_code = run(sys.argv)
+    sys.exit(exit_code)
+
+
+def run(args: List[str]):
     parser = argparse.ArgumentParser(
         prog='task',
         description='runs a task specified in your pyproject.toml under [tool.taskipy.tasks]',
@@ -22,19 +28,18 @@ def main():
 
         if args.list:
             runner.list()
-            sys.exit(0)
+            return 0
 
         if args.name is None:
             raise InvalidUsageError(parser)
 
-        exit_code = runner.run(args.name, args.args)
-        sys.exit(exit_code)
+        return runner.run(args.name, args.args)
     except TaskipyError as e:
         print(e)
-        sys.exit(e.exit_code)
+        return e.exit_code
     except Exception as e:
         print(e)
-        sys.exit(1)
+        return 1
 
 
 if __name__ == '__main__':
