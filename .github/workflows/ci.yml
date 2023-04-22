@@ -31,7 +31,9 @@ jobs:
         pip install poetry
     - name: Install Dependencies (Python 3.6)
       if: ${{ matrix.python-version == 3.6 }}
-      run: poetry run pip install -r .github/requirements-py36-ci.txt
+      run: |
+        poetry run pip install -r .github/requirements-py36-ci.txt
+        python .github/setup-py36-ci.py install
     - name: Install Dependencies (Python 3.7+)
       if: ${{ matrix.python-version != 3.6 }}
       run: poetry install
