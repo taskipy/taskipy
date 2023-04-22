@@ -1,6 +1,7 @@
 [MASTER]
 disable=
       C0114,
+      R0201,
       W0702,
       C0411,
       R0903,
@@ -14,3 +15,4 @@ max-line-length=1000
 no-docstring-rgx=^.*
 const-rgx=^.*
 variable-rgx=[a-z_][a-z0-9_]{0,30}$
+missing-module-docstring=^.*

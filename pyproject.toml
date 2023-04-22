@@ -25,27 +25,15 @@ tomli = [
     { version = "^2.0.1", python = "^3.7" },
     { version = "^1.2.3", python = "~3.6" }
 ]
-psutil = "^5.9.4"
+psutil = "^5.7.2"
 mslex = { version = "^0.3.0", markers = "sys_platform == 'win32'" }
-colorama = [
-    { version = "^0.4.6", python = "^3.7" },
-    { version = "^0.4.5", python = "~3.6" },
-]
+colorama = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
-pylint = [
-    { version = "^2.17.2", python = "^3.7.2" },
-    { version = "^2.12.0", python = ">=3.6,<3.7.2" },
-]
-mypy = [
-    { version = "^1.2", python = "^3.7" },
-    { version = "^0.971", python = "~3.6" },
-]
+pylint = "^2.4.4"
+mypy = "^0.812"
 rope = "^0.14.0"
-parameterized = [
-    { version = "^0.9", python = "^3.7" },
-    { version = "^0.8.1", python = "~3.6" },
-]
+parameterized = "^0.8.1"
 
 [tool.taskipy.tasks]
 test = { cmd = "python -m unittest -v tests/test_*.py", help = "runs all tests" }
