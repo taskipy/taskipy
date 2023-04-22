@@ -15,7 +15,7 @@ def main():
 
 def run(args: List[str]) -> int:
     """Run the taskipy CLI programmatically.
-    
+
     Args:
         args: The arguments passed to the taskipy CLI.
 
