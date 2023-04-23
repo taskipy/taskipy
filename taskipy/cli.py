@@ -13,10 +13,7 @@ def main():
     sys.exit(exit_code)
 
 
-def run(
-    args: List[str],
-    cwd: Union[str, Path, None] = None
-) -> int:
+def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
     """Run the taskipy CLI programmatically.
 
     Args:

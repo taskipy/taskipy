@@ -26,7 +26,7 @@ class TaskRunner:
         self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
 
-    def list(self):  # pylint: disable=C0103
+    def list(self):
         """lists tasks to stdout"""
         formatter = TasksListFormatter(self.__project.tasks.values())
         formatter.print()
