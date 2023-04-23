@@ -1,7 +1,7 @@
 import shutil
 import textwrap
 import colorama  # type: ignore
-from typing import List, Type, Optional
+from typing import Iterable, Optional
 
 from taskipy.io import AbstractIO
 from taskipy.task import Task
@@ -9,14 +9,14 @@ from taskipy.exceptions import EmptyTasksSectionError
 
 
 class TasksListFormatter:
-    def __init__(self, tasks: List[Task]):
+    def __init__(self, tasks: Iterable[Task]):
         if not tasks:
             raise EmptyTasksSectionError()
 
         self.__tasks = tasks
         colorama.init()
 
-    def print(self, io: Type[AbstractIO], line_width: Optional[int] = None):  # pylint: disable=C0103
+    def print(self, io: AbstractIO, line_width: Optional[int] = None):  # pylint: disable=C0103
         if not line_width:
             line_width = shutil.get_terminal_size().columns
 

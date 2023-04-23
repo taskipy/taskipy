@@ -2,7 +2,7 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Type, Union
+from typing import List, Union
 
 from taskipy.io import AbstractIO, AppIO
 from taskipy.exceptions import TaskipyError, InvalidUsageError
@@ -16,7 +16,7 @@ def main():
 
 def run(
     args: List[str],
-    io: Type[AbstractIO] = AppIO(),  # pylint: disable=C0103
+    io: AbstractIO = AppIO(),  # pylint: disable=C0103
     cwd: Union[str, Path, None] = None
 ) -> int:
     """Run the taskipy CLI programmatically.

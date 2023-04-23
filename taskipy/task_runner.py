@@ -4,7 +4,7 @@ import signal
 import subprocess
 from pathlib import Path
 from types import FrameType
-from typing import Callable, Dict, List, Tuple, Type, Union, Optional
+from typing import Callable, Dict, List, Tuple, Union, Optional
 
 import psutil  # type: ignore
 
@@ -27,7 +27,7 @@ class TaskRunner:
         self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
 
-    def list(self, io: Type[AbstractIO]):  # pylint: disable=C0103
+    def list(self, io: AbstractIO):  # pylint: disable=C0103
         """lists tasks to stdout"""
         formatter = TasksListFormatter(self.__project.tasks.values())
         formatter.print(io)
