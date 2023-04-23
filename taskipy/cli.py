@@ -2,8 +2,9 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Union
+from typing import List, Type, Union
 
+from taskipy import io
 from taskipy.exceptions import TaskipyError, InvalidUsageError
 from taskipy.task_runner import TaskRunner
 
@@ -13,11 +14,16 @@ def main():
     sys.exit(exit_code)
 
 
-def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
+def run(
+    args: List[str],
+    io: Type[io.AbstractIO] = io.AppIO(),
+    cwd: Union[str, Path, None] = None
+) -> int:
     """Run the taskipy CLI programmatically.
 
     Args:
         args: The arguments passed to the taskipy CLI.
+        io: The IO to use for outputting to the console.
         cwd: The working directory to run the task in. If not
             provided, defaults to the current working directory.
 
@@ -46,10 +52,10 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
 
         return runner.run(parsed_args.name, parsed_args.args)
     except TaskipyError as e:
-        print(e)
+        io.write_line(e.message)
         return e.exit_code
     except Exception as e:
-        print(e)
+        io.write_line(e.message)
         return 1
 
 

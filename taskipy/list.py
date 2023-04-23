@@ -1,21 +1,24 @@
 import shutil
 import textwrap
-import colorama # type: ignore
-from typing import List
+import colorama  # type: ignore
+from typing import List, Type, Optional
 
+from taskipy import io
 from taskipy.task import Task
 from taskipy.exceptions import EmptyTasksSectionError
 
 
 class TasksListFormatter:
     def __init__(self, tasks: List[Task]):
-        self.__tasks = tasks
+        if not tasks:
+            raise EmptyTasksSectionError()
 
-    def print(self, line_width=shutil.get_terminal_size().columns):
+        self.__tasks = tasks
         colorama.init()
 
-        if not self.__tasks:
-            raise EmptyTasksSectionError()
+    def print(self, io: Type[io.AbstractIO], line_width: Optional[int] = None):
+        if not line_width:
+            line_width = shutil.get_terminal_size().columns
 
         tasks_col = [task.name for task in self.__tasks]
         longest_item_in_tasks_col = len(max(tasks_col, key=len))
@@ -31,7 +34,7 @@ class TasksListFormatter:
             desc_col_text = '\n'.join(textwrap.wrap(desc_text,
                                                     width=desc_col_width,
                                                     subsequent_indent=desc_col_wrap_indent))
-            print(f'{self.__highlight(tasks_col_text)} {desc_col_text}')
+            io.write_line(f'{self.__highlight(tasks_col_text)} {desc_col_text}')
 
     def __highlight(self, text: str):
         return f'{colorama.Fore.CYAN}{text}{colorama.Style.RESET_ALL}'
