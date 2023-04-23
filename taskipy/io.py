@@ -9,4 +9,3 @@ class AbstractIO(abc.ABC):
 class AppIO(AbstractIO):
     def write_line(self, line: str) -> None:
         print(line)
-

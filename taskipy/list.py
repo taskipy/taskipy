@@ -3,7 +3,7 @@ import textwrap
 import colorama  # type: ignore
 from typing import List, Type, Optional
 
-from taskipy import io
+from taskipy.io import AbstractIO
 from taskipy.task import Task
 from taskipy.exceptions import EmptyTasksSectionError
 
@@ -16,7 +16,7 @@ class TasksListFormatter:
         self.__tasks = tasks
         colorama.init()
 
-    def print(self, io: Type[io.AbstractIO], line_width: Optional[int] = None):
+    def print(self, io: Type[AbstractIO], line_width: Optional[int] = None):  # pylint: disable=C0103
         if not line_width:
             line_width = shutil.get_terminal_size().columns
 

@@ -8,8 +8,8 @@ from typing import Callable, Dict, List, Tuple, Type, Union, Optional
 
 import psutil  # type: ignore
 
-from taskipy import io
 from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
+from taskipy.io import AbstractIO
 from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
 from taskipy.task import Task
@@ -27,7 +27,7 @@ class TaskRunner:
         self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
 
-    def list(self, io: Type[io.AbstractIO]):
+    def list(self, io: Type[AbstractIO]):  # pylint: disable=C0103
         """lists tasks to stdout"""
         formatter = TasksListFormatter(self.__project.tasks.values())
         formatter.print(io)
