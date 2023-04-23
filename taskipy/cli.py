@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 from typing import List, Union
 
-from taskipy.io import AbstractIO, AppIO
 from taskipy.exceptions import TaskipyError, InvalidUsageError
 from taskipy.task_runner import TaskRunner
 
@@ -16,14 +15,12 @@ def main():
 
 def run(
     args: List[str],
-    io: AbstractIO = AppIO(),  # pylint: disable=C0103
     cwd: Union[str, Path, None] = None
 ) -> int:
     """Run the taskipy CLI programmatically.
 
     Args:
         args: The arguments passed to the taskipy CLI.
-        io: The IO to use for outputting to the console.
         cwd: The working directory to run the task in. If not
             provided, defaults to the current working directory.
 
@@ -44,7 +41,7 @@ def run(
         runner = TaskRunner(cwd)
 
         if parsed_args.list:
-            runner.list(io)
+            runner.list()
             return 0
 
         if parsed_args.name is None:
@@ -52,10 +49,10 @@ def run(
 
         return runner.run(parsed_args.name, parsed_args.args)
     except TaskipyError as e:
-        io.write_line(str(e))
+        print(e)
         return e.exit_code
     except Exception as e:
-        io.write_line(str(e))
+        print(e)
         return 1
 
 
