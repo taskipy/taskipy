@@ -4,10 +4,11 @@ import signal
 import subprocess
 from pathlib import Path
 from types import FrameType
-from typing import Callable, Dict, List, Tuple, Union, Optional
+from typing import Callable, Dict, List, Tuple, Type, Union, Optional
 
 import psutil  # type: ignore
 
+from taskipy import io
 from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
 from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
@@ -26,10 +27,10 @@ class TaskRunner:
         self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
 
-    def list(self):
+    def list(self, io: Type[io.AbstractIO]):
         """lists tasks to stdout"""
         formatter = TasksListFormatter(self.__project.tasks.values())
-        formatter.print()
+        formatter.print(io)
 
     def run(self, task_name: str, args: List[str]) -> int:
         pre_command, command, post_command = self.__get_formatted_commands(task_name)

@@ -44,7 +44,7 @@ def run(
         runner = TaskRunner(cwd)
 
         if parsed_args.list:
-            runner.list()
+            runner.list(io)
             return 0
 
         if parsed_args.name is None:
