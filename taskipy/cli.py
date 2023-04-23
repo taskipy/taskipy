@@ -52,10 +52,10 @@ def run(
 
         return runner.run(parsed_args.name, parsed_args.args)
     except TaskipyError as e:
-        io.write_line(e.message)
+        io.write_line(str(e))
         return e.exit_code
     except Exception as e:
-        io.write_line(e.message)
+        io.write_line(str(e))
         return 1
 
 
