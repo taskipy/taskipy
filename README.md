@@ -279,7 +279,7 @@ In this example, we could run `task echo` and we would then see `src/package`.
 
 ### Using Taskipy Without Poetry
 
-Taskipy was created with poetry projects in mind, but actually only requires a valid `pyproject.toml` file in your project's directory. As a result, you can use it even eithout poetry:
+Taskipy was created with poetry projects in mind, but actually only requires a valid `pyproject.toml` file in your project's directory. As a result, you can use it even without poetry:
 
 #### Installing With PIP
 
