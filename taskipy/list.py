@@ -1,21 +1,23 @@
 import shutil
 import textwrap
-import colorama # type: ignore
-from typing import List
+import colorama  # type: ignore
+from typing import Iterable, Optional
 
 from taskipy.task import Task
 from taskipy.exceptions import EmptyTasksSectionError
 
 
 class TasksListFormatter:
-    def __init__(self, tasks: List[Task]):
-        self.__tasks = tasks
+    def __init__(self, tasks: Iterable[Task]):
+        if not tasks:
+            raise EmptyTasksSectionError()
 
-    def print(self, line_width=shutil.get_terminal_size().columns):
+        self.__tasks = tasks
         colorama.init()
 
-        if not self.__tasks:
-            raise EmptyTasksSectionError()
+    def print(self, line_width: Optional[int] = None):
+        if not line_width:
+            line_width = shutil.get_terminal_size().columns
 
         tasks_col = [task.name for task in self.__tasks]
         longest_item_in_tasks_col = len(max(tasks_col, key=len))
