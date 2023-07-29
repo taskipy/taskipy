@@ -1,3 +1,5 @@
+from typing import Optional
+
 from taskipy.exceptions import MalformedTaskError
 
 
@@ -9,29 +11,31 @@ class Task:
         self.__task_use_vars = self.__extract_task_use_vars(task_toml_contents)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__task_name
 
     @property
-    def command(self):
+    def command(self) -> str:
         return self.__task_command
 
     @property
-    def description(self):
+    def description(self) -> str:
         return self.__task_description
 
     @property
-    def use_vars(self):
+    def use_vars(self) -> Optional[bool]:
         return self.__task_use_vars
 
-    def __extract_task_use_vars(self, task_toml_contents: object) -> bool:
+    def __extract_task_use_vars(self, task_toml_contents: object) -> Optional[bool]:
         if isinstance(task_toml_contents, str):
-            return False
+            return None
+
         if isinstance(task_toml_contents, dict):
-            value = task_toml_contents.get('use_vars', False)
-            if not isinstance(value, bool):
+            value = task_toml_contents.get('use_vars')
+            if value and not isinstance(value, bool):
                 raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
             return value
+
         raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
 
     def __extract_task_command(self, task_toml_contents: object) -> str:

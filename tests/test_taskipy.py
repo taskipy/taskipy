@@ -554,6 +554,38 @@ class UseVarsTestCase(TaskipyTestCase):
         self.assertSubstr('hello John Doe :', stdout)
         self.assertEqual(exit_code, 0)
 
+    def test_use_vars_setting_override_to_false(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = true
+
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}:", use_vars = false }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello {name}:', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_use_vars_setting_override_to_true(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            use_vars = false
+
+            [tool.taskipy.variables]
+            name = "John Doe"
+
+            [tool.taskipy.tasks]
+            echo = { cmd = "echo hello {name}:", use_vars = true }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
+        self.assertSubstr('hello John Doe:', stdout)
+        self.assertEqual(exit_code, 0)
+
 
 class RecursiveVariablesTestCase(TaskipyTestCase):
     def test_recursive_variables_can_use_other_variables(self):
