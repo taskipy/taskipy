@@ -134,8 +134,10 @@ class TaskRunner:
 
         return nonrecursive_vars, recursive_vars
 
-    def __format_task_command(self, task: Task, variables: Optional[dict]) -> str:
-        if task.use_vars or self.__project.settings.get('use_vars'):
+    def __format_task_command(self, task: Task, variables: dict) -> str:
+        if task.use_vars or (
+            task.use_vars is None and self.__project.settings.get('use_vars')
+        ):
             try:
                 return task.command.format(**variables)
             except KeyError as e:
