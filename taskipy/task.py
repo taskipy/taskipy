@@ -32,7 +32,7 @@ class Task:
 
         if isinstance(task_toml_contents, dict):
             value = task_toml_contents.get('use_vars')
-            if value and not isinstance(value, bool):
+            if value is not None and not isinstance(value, bool):
                 raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
             return value
 
