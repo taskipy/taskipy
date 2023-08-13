@@ -1,21 +1,25 @@
-import sys
 import platform
 import signal
 import subprocess
+import sys
 from pathlib import Path
 from types import FrameType
-from typing import Callable, Dict, List, Tuple, Union, Optional
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import psutil  # type: ignore
 
-from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
+from taskipy.exceptions import (
+    CircularVariableError,
+    MalformedTaskError,
+    TaskNotFoundError,
+)
 from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
 from taskipy.task import Task
 from taskipy.variable import Variable
 
-if platform.system() == 'Windows':
-    import mslex as shlex  # type: ignore # pylint: disable=E0401
+if platform.system() == "Windows":
+    import mslex as shlex  # type: ignore
 else:
     import shlex  # type: ignore[no-redef]
 
@@ -57,7 +61,7 @@ class TaskRunner:
 
         should_resolve_vars = (
             self.__is_using_vars([pre_task, task, post_task])
-            or self.__project.settings.get('use_vars') is True
+            or self.__project.settings.get("use_vars") is True
         )
         variables = self.__resolve_variables() if should_resolve_vars else {}
 
@@ -73,7 +77,9 @@ class TaskRunner:
 
         return pre_command, command, post_command
 
-    def __get_tasks(self, task_name: str) -> Tuple[Optional[Task], Task, Optional[Task]]:
+    def __get_tasks(
+        self, task_name: str
+    ) -> Tuple[Optional[Task], Task, Optional[Task]]:
         pre_task = self.__pre_task(task_name)
         post_task = self.__post_task(task_name)
 
@@ -85,10 +91,10 @@ class TaskRunner:
         return pre_task, task, post_task
 
     def __pre_task(self, task_name: str) -> Optional[Task]:
-        return self.__project.tasks.get(f'pre_{task_name}')
+        return self.__project.tasks.get(f"pre_{task_name}")
 
     def __post_task(self, task_name: str) -> Optional[Task]:
-        return self.__project.tasks.get(f'post_{task_name}')
+        return self.__project.tasks.get(f"post_{task_name}")
 
     def __is_using_vars(self, tasks: List[Optional[Task]]) -> bool:
         use_vars = False
@@ -106,7 +112,7 @@ class TaskRunner:
         )
 
         while len(recursive_vars) > 0:
-            count_of_previously_resolved_vars = len(nonrecursive_vars)  # pylint: disable=C0103
+            count_of_previously_resolved_vars = len(nonrecursive_vars)
 
             for name, value in recursive_vars.copy().items():
                 try:
@@ -136,14 +142,14 @@ class TaskRunner:
 
     def __format_task_command(self, task: Task, variables: dict) -> str:
         if task.use_vars or (
-            task.use_vars is None and self.__project.settings.get('use_vars')
+            task.use_vars is None and self.__project.settings.get("use_vars")
         ):
             try:
                 return task.command.format(**variables)
             except KeyError as e:
                 raise MalformedTaskError(
                     task.name,
-                    f'{e} variable expected in [tool.taskipy.variables]',
+                    f"{e} variable expected in [tool.taskipy.variables]",
                 )
 
         return task.command
@@ -155,9 +161,9 @@ class TaskRunner:
             args = []
 
         if self.__project.runner is not None:
-            command = f'{self.__project.runner} {command}'
+            command = f"{self.__project.runner} {command}"
 
-        command_with_args = ' '.join([command] + [shlex.quote(arg) for arg in args])
+        command_with_args = " ".join([command] + [shlex.quote(arg) for arg in args])
         process = subprocess.Popen(
             command_with_args, shell=True, cwd=self.__working_dir
         )
@@ -174,9 +180,8 @@ class TaskRunner:
         self, process: subprocess.Popen
     ) -> Callable[[int, Optional[FrameType]], None]:
         def signal_handler(signum: int, _frame):
-            # pylint: disable=W0640
             psutil_process_wrapper = psutil.Process(process.pid)
-            is_direct_subprocess_a_shell_process = sys.platform != 'darwin'  # pylint: disable=C0103
+            is_direct_subprocess_a_shell_process = sys.platform != "darwin"
 
             if is_direct_subprocess_a_shell_process:
                 # A shell is created because of Popen(..., shell=True) on linux only

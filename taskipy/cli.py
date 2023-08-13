@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from typing import List, Union
 
-from taskipy.exceptions import TaskipyError, InvalidUsageError
+from taskipy.exceptions import InvalidUsageError, TaskipyError
 from taskipy.task_runner import TaskRunner
 
 
@@ -25,12 +25,18 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
         0 on success; > 0 for an error.
     """
     parser = argparse.ArgumentParser(
-        prog='task',
-        description='runs a task specified in your pyproject.toml under [tool.taskipy.tasks]',
+        prog="task",
+        description=(
+            "runs a task specified in your pyproject.toml " "under [tool.taskipy.tasks]"
+        ),
     )
-    parser.add_argument('-l', '--list', help='show list of available tasks', action='store_true')
-    parser.add_argument('name', help='name of the task', nargs='?')
-    parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
+    parser.add_argument(
+        "-l", "--list", help="show list of available tasks", action="store_true"
+    )
+    parser.add_argument("name", help="name of the task", nargs="?")
+    parser.add_argument(
+        "args", nargs=argparse.REMAINDER, help="arguments to pass to the task"
+    )
     parsed_args = parser.parse_args(args=args)
 
     try:
@@ -53,5 +59,5 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
