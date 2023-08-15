@@ -52,10 +52,10 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
 
         return runner.run(parsed_args.name, parsed_args.args)
     except TaskipyError as e:
-        print(e)
+        print(e, file=sys.stderr)
         return e.exit_code
     except Exception as e:
-        print(e)
+        print(e, file=sys.stderr)
         return 1
 
 

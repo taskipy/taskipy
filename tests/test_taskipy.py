@@ -34,7 +34,7 @@ class TaskipyTestCase(unittest.TestCase):
         args = args or []
         proc = self.start_taskipy_process(task, args=args, cwd=cwd)
         stdout, stderr = proc.communicate()
-        return proc.returncode, stdout.decode(), str(stderr)
+        return proc.returncode, stdout.decode(), stderr.decode()
 
     def start_taskipy_process(
         self,
@@ -274,24 +274,24 @@ class ListTasksTestCase(TaskipyTestCase):
             [tool.taskipy.tasks]
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("--list", cwd=cwd)
+        exit_code, _, stderr = self.run_task("--list", cwd=cwd)
 
         self.assertTerminalTextEqual(
             "no tasks found. create your first task by adding it to your "
             "pyproject.toml file under [tool.taskipy.tasks]",
-            stdout.strip(),
+            stderr.strip(),
         )
         self.assertEqual(exit_code, 127)
 
     def test_running_task_list_no_tasks_section(self):
         py_project_toml = ""
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("--list", cwd=cwd)
+        exit_code, _, stderr = self.run_task("--list", cwd=cwd)
 
         self.assertTerminalTextEqual(
             "no tasks found. add a [tool.taskipy.tasks] section to "
             "your pyproject.toml",
-            stdout.strip(),
+            stderr.strip(),
         )
         self.assertEqual(exit_code, 127)
 
@@ -323,10 +323,10 @@ class TaskDescriptionTestCase(TaskipyTestCase):
             print_age = { help = "prints the age" }
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("print_age", cwd=cwd)
+        exit_code, _, stderr = self.run_task("print_age", cwd=cwd)
 
         self.assertEqual(exit_code, 1)
-        self.assertSubstr('the task item does not have the "cmd" property', stdout)
+        self.assertSubstr('the task item does not have the "cmd" property', stderr)
 
     def test_allow_task_to_not_have_help(self):
         py_project_toml = """
@@ -345,21 +345,21 @@ class TaskDescriptionTestCase(TaskipyTestCase):
             print_age = 5
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("print_age", cwd=cwd)
+        exit_code, _, stderr = self.run_task("print_age", cwd=cwd)
 
         self.assertEqual(exit_code, 1)
         self.assertSubstr(
             "tasks must be strings, or dicts that contain { cmd, help, use_vars }",
-            stdout,
+            stderr,
         )
 
 
 class TaskRunFailTestCase(TaskipyTestCase):
     def test_exiting_with_code_127_and_printing_if_task_not_found(self):
         cwd = self.create_test_dir_from_fixture("project_with_pyproject_and_tasks")
-        exit_code, stdout, _ = self.run_task("task_that_does_not_exist", cwd=cwd)
+        exit_code, _, stderr = self.run_task("task_that_does_not_exist", cwd=cwd)
 
-        self.assertSubstr('could not find task "task_that_does_not_exist"', stdout)
+        self.assertSubstr('could not find task "task_that_does_not_exist"', stderr)
         self.assertEqual(exit_code, 127)
 
     def test_exiting_with_code_127_and_printing_if_no_arg_is_passed(self):
@@ -372,40 +372,40 @@ class TaskRunFailTestCase(TaskipyTestCase):
             stderr=subprocess.PIPE,
             cwd=cwd,
         )
-        stdout, _ = proc.communicate()
+        _, stderr = proc.communicate()
 
-        self.assertSubstr("usage: task", stdout.decode())
+        self.assertSubstr("usage: task", stderr.decode())
         self.assertEqual(proc.returncode, 127)
 
     def test_exiting_with_code_127_and_printing_if_no_tasks_section(self):
         cwd = self.create_test_dir_from_fixture(
             "project_with_pyproject_without_tasks_section"
         )
-        exit_code, stdout, _ = self.run_task("task_that_does_not_exist", cwd=cwd)
+        exit_code, _, stderr = self.run_task("task_that_does_not_exist", cwd=cwd)
 
         self.assertSubstr(
             "no tasks found. add a [tool.taskipy.tasks] section to "
             "your pyproject.toml",
-            stdout,
+            stderr,
         )
         self.assertEqual(exit_code, 127)
 
     def test_exiting_with_code_1_and_printing_if_no_pyproject_toml_file_found(self):
         cwd = self.create_test_dir_from_fixture("project_without_pyproject")
-        exit_code, stdout, _ = self.run_task("some_task", cwd=cwd)
+        exit_code, _, stderr = self.run_task("some_task", cwd=cwd)
 
         self.assertSubstr(
             "no pyproject.toml file found in this directory or parent directories",
-            stdout,
+            stderr,
         )
         self.assertEqual(exit_code, 1)
 
     def test_exiting_with_code_1_and_printing_if_pyproject_toml_file_is_malformed(self):
         cwd = self.create_test_dir_from_fixture("project_with_malformed_pyproject")
-        exit_code, stdout, _ = self.run_task("some_task", cwd=cwd)
+        exit_code, _, stderr = self.run_task("some_task", cwd=cwd)
 
         self.assertSubstr(
-            "pyproject.toml file is malformed and could not be read", stdout
+            "pyproject.toml file is malformed and could not be read", stderr
         )
         self.assertEqual(exit_code, 1)
 
@@ -509,12 +509,12 @@ class CustomRunnerTestCase(TaskipyTestCase):
             print_with_python = "python -c 'print(1337)'"
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("print_with_python", cwd=cwd)
+        exit_code, _, stderr = self.run_task("print_with_python", cwd=cwd)
 
         self.assertSubstr(
             "invalid value: runner is not a string. please check "
             "[tool.taskipy.settings.runner]",
-            stdout,
+            stderr,
         )
         self.assertEqual(exit_code, 1)
 
@@ -599,8 +599,8 @@ class UseVarsTestCase(TaskipyTestCase):
             echo = { cmd = "echo hello {name}", use_vars = 1 }
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("echo", cwd=cwd)
-        self.assertSubstr('task\'s "use_vars" arg has to be bool', stdout)
+        exit_code, _, stderr = self.run_task("echo", cwd=cwd)
+        self.assertSubstr('task\'s "use_vars" arg has to be bool', stderr)
         self.assertEqual(exit_code, 1)
 
     def test_use_vars_missing_var(self):
@@ -609,9 +609,9 @@ class UseVarsTestCase(TaskipyTestCase):
             echo = { cmd = "echo hello {name}", use_vars = true }
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("echo", cwd=cwd)
+        exit_code, _, stderr = self.run_task("echo", cwd=cwd)
         self.assertSubstr(
-            "reason: 'name' variable expected in [tool.taskipy.variables]", stdout
+            "reason: 'name' variable expected in [tool.taskipy.variables]", stderr
         )
         self.assertEqual(exit_code, 1)
 
@@ -716,10 +716,10 @@ class RecursiveVariablesTestCase(TaskipyTestCase):
             echo = "echo hello {first_name} {last_name}!"
         """
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("echo", cwd=cwd)
+        exit_code, _, stderr = self.run_task("echo", cwd=cwd)
         self.assertSubstr(
             "cannot resolve variables, found variables that depend on each other",
-            stdout,
+            stderr,
         )
         self.assertEqual(exit_code, 127)
 
@@ -830,6 +830,6 @@ class VariableSchemaTestCase(TaskipyTestCase):
         """
         )
         cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
-        exit_code, stdout, _ = self.run_task("echo", cwd=cwd)
-        self.assertSubstr("variable test is invalid", stdout)
+        exit_code, _, stderr = self.run_task("echo", cwd=cwd)
+        self.assertSubstr("variable test is invalid", stderr)
         self.assertEqual(exit_code, 127)
