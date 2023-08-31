@@ -31,12 +31,18 @@ class Task:
             return None
 
         if isinstance(task_toml_contents, dict):
-            value = task_toml_contents.get('use_vars')
+            value = task_toml_contents.get("use_vars")
             if value is not None and not isinstance(value, bool):
-                raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
+                raise MalformedTaskError(
+                    self.__task_name,
+                    f'task\'s "use_vars" arg has to be bool type got {type(value)}',
+                )
             return value
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(
+            self.__task_name,
+            "tasks must be strings, or dicts that contain { cmd, help, use_vars }",
+        )
 
     def __extract_task_command(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
@@ -44,20 +50,28 @@ class Task:
 
         if isinstance(task_toml_contents, dict):
             try:
-                return task_toml_contents['cmd']
+                return task_toml_contents["cmd"]
             except KeyError:
-                raise MalformedTaskError(self.__task_name, 'the task item does not have the "cmd" property')
+                raise MalformedTaskError(
+                    self.__task_name, 'the task item does not have the "cmd" property'
+                )
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(
+            self.__task_name,
+            "tasks must be strings, or dicts that contain { cmd, help, use_vars }",
+        )
 
     def __extract_task_description(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
-            return ''
+            return ""
 
         if isinstance(task_toml_contents, dict):
             try:
-                return task_toml_contents['help']
+                return task_toml_contents["help"]
             except KeyError:
-                return ''
+                return ""
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars}')
+        raise MalformedTaskError(
+            self.__task_name,
+            "tasks must be strings, or dicts that contain { cmd, help, use_vars}",
+        )

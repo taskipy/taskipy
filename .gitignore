@@ -25,3 +25,7 @@ MANIFEST
 .idea
 .python-version
 .DS_Store
+
+# Tests
+.coverage
+

@@ -1,8 +1,9 @@
-import tempfile
-import shutil
 import os
-from os import path
+import shutil
+import tempfile
 from abc import abstractmethod
+from os import path
+
 
 class ProjectDirGenerator:
     @abstractmethod
@@ -24,7 +25,7 @@ class GenerateProjectWithPyProjectToml(ProjectDirGenerator):
 
     def generate_project(self, temp_dir: str):
         os.makedirs(temp_dir)
-        with open(path.join(temp_dir, 'pyproject.toml'), 'w', encoding='utf-8') as f:
+        with open(path.join(temp_dir, "pyproject.toml"), "w", encoding="utf-8") as f:
             f.write(self._py_project_toml)
 
 
@@ -39,4 +40,3 @@ class TempProjectDir:
 
     def clean(self):
         shutil.rmtree(self._tmpdir, ignore_errors=True)
-    

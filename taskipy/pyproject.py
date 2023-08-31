@@ -1,10 +1,8 @@
-import tomli
-
 from pathlib import Path
 from typing import Any, Dict, MutableMapping, Optional, Union
 
-from taskipy.task import Task
-from taskipy.variable import Variable
+import tomli
+
 from taskipy.exceptions import (
     InvalidRunnerTypeError,
     InvalidVariableError,
@@ -12,6 +10,8 @@ from taskipy.exceptions import (
     MissingPyProjectFileError,
     MissingTaskipyTasksSectionError,
 )
+from taskipy.task import Task
+from taskipy.variable import Variable
 
 
 class PyProject:
@@ -22,7 +22,7 @@ class PyProject:
     @property
     def tasks(self) -> Dict[str, Task]:
         try:
-            toml_tasks = self.__items['tool']['taskipy']['tasks'].items()
+            toml_tasks = self.__items["tool"]["taskipy"]["tasks"].items()
         except KeyError:
             raise MissingTaskipyTasksSectionError()
 
@@ -35,7 +35,7 @@ class PyProject:
     @property
     def variables(self) -> Dict[str, Variable]:
         try:
-            toml_vars = self.__items['tool']['taskipy'].get('variables', {})
+            toml_vars = self.__items["tool"]["taskipy"].get("variables", {})
         except KeyError:
             return {}
 
@@ -43,21 +43,20 @@ class PyProject:
         for name, toml_contents in toml_vars.items():
             if isinstance(toml_contents, str):
                 vars_dict[name] = Variable(name, toml_contents, recursive=False)
-            elif (
-                isinstance(toml_contents, dict)
-                and isinstance(toml_contents.get('var'), str)
+            elif isinstance(toml_contents, dict) and isinstance(
+                toml_contents.get("var"), str
             ):
                 vars_dict[name] = Variable(
                     name,
-                    toml_contents['var'],
-                    toml_contents.get('recursive', False),
+                    toml_contents["var"],
+                    toml_contents.get("recursive", False),
                 )
             else:
                 raise InvalidVariableError(
                     name,
-                    f'expected variable to contain a string or be a table '
+                    f"expected variable to contain a string or be a table "
                     'with a key "var" that contains a string value, got '
-                    f'{toml_contents}.'
+                    f"{toml_contents}.",
                 )
 
         return vars_dict
@@ -65,14 +64,14 @@ class PyProject:
     @property
     def settings(self) -> dict:
         try:
-            return self.__items['tool']['taskipy']['settings']
+            return self.__items["tool"]["taskipy"]["settings"]
         except KeyError:
             return {}
 
     @property
     def runner(self) -> Optional[str]:
         try:
-            runner = self.settings['runner']
+            runner = self.settings["runner"]
 
             if not isinstance(runner, str):
                 raise InvalidRunnerTypeError()
@@ -87,7 +86,7 @@ class PyProject:
             if isinstance(file_path, str):
                 file_path = Path(file_path).resolve()
 
-            with open(file_path, 'rb') as file:
+            with open(file_path, "rb") as file:
                 return tomli.load(file)
         except FileNotFoundError:
             raise MissingPyProjectFileError()
@@ -102,7 +101,7 @@ class PyProject:
                 yield parent
 
         for candidate_dir in candidate_dirs(base_dir):
-            pyproject = candidate_dir / 'pyproject.toml'
+            pyproject = candidate_dir / "pyproject.toml"
             if pyproject.exists():
                 return pyproject
 
