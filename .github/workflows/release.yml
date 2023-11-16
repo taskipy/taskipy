@@ -2,7 +2,8 @@ name: Release Python Package
 
 on:
   release:
-    types: [created]
+    types:
+      - published
 
 jobs:
   release:
