@@ -1,0 +1,24 @@
+name: Release Python Package
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: pip install setuptools==68.2.2 wheel==0.41.3 poetry==1.7.1
+    - name: Build and publish
+      run: |
+        poetry build
+        poetry publish
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
