@@ -15,11 +15,10 @@ jobs:
       with:
         python-version: '3.12'
     - name: Install dependencies
-      run: pip install setuptools==68.2.2 wheel==0.41.3 poetry==1.7.0 twine==4.0.2
+      run: pip install setuptools==68.2.2 wheel==0.41.3 poetry==1.7.1
     - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         poetry build
-        twine upload dist/*
+        poetry publish
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
