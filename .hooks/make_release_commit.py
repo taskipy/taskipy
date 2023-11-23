@@ -13,14 +13,16 @@ def create_release_commit():
     branch = f"release-{version}-{secrets.token_hex(12)}"
 
     p = subprocess.Popen(
-        " && ".join[
-            f"git checkout -b {branch}",
-            "git add .",
-            f'git commit -m "Release version {version}"',
-            f'git tag -a "{version}" -m "Release version {version}"',
-            f"git push --set-upstream origin {branch}",
-            f"git push --tags",
-        ],
+        " && ".join(
+            [
+                f"git checkout -b {branch}",
+                "git add .",
+                f'git commit -m "Release version {version}"',
+                f'git tag -a "{version}" -m "Release version {version}"',
+                f"git push --set-upstream origin {branch}",
+                f"git push --tags",
+            ]
+        ),
         shell=True,
         cwd=cwd,
     )
