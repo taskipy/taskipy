@@ -2,6 +2,7 @@
 import tomli
 import secrets
 import subprocess
+import webbrowser
 from pathlib import Path
 
 
@@ -28,6 +29,10 @@ def create_release_commit():
     )
 
     p.wait()
+
+    webbrowser.open(
+        f"https://github.com/taskipy/taskipy/compare/{branch}?quick_pull=1&title=Release%20Version%20{version}&body=%3E%20Please%20describe%20your%20release%20here"
+    )
 
 
 if __name__ == "__main__":
