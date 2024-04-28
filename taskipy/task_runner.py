@@ -8,6 +8,7 @@ from typing import Callable, Dict, List, Tuple, Union, Optional
 
 import psutil  # type: ignore
 
+from taskipy.decorators import apply_decorators
 from taskipy.exceptions import CircularVariableError, TaskNotFoundError, MalformedTaskError
 from taskipy.list import TasksListFormatter
 from taskipy.pyproject import PyProject
@@ -25,13 +26,19 @@ class TaskRunner:
         working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
         self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
+        self.__run_task_with_decorators = self.__run_task
 
     def list(self):
         """lists tasks to stdout"""
         formatter = TasksListFormatter(self.__project.tasks.values())
         formatter.print()
 
-    def run(self, task_name: str, args: List[str]) -> int:
+    def run(self, task_name: str, args: List[str], decorators: List[Callable] = None) -> int:
+        if decorators:
+            self.__run_task_with_decorators = apply_decorators(self.__run_task, decorators)
+        return self.__run_task_with_decorators(task_name, args)
+
+    def __run_task(self, task_name: str, args: List[str]) -> int: # pylint: disable=E0202
         pre_command, command, post_command = self.__get_formatted_commands(task_name)
 
         if pre_command is not None:
