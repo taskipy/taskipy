@@ -10,7 +10,7 @@ def apply_decorators(func: Callable, decorators: Sequence[Callable[..., Any]]) -
 
 def measure_time(func: Callable):
     @wraps(func)
-    def wrapper(task_name:str, *args, **kwargs):
+    def wrapper(task_name: str, *args, **kwargs):
         start_time = time.time()
         result = func(task_name, *args, **kwargs)
         end_time = time.time()
