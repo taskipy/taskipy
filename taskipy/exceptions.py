@@ -35,11 +35,14 @@ class MalformedPyProjectError(TaskipyError):
 class TaskNotFoundError(TaskipyError):
     exit_code = 127
 
-    def __init__(self, task_name: str):
+    def __init__(self, task_name: str, suggestion: Optional[str] = None):
         super().__init__()
         self.task = task_name
+        self.suggestion = suggestion
 
     def __str__(self):
+        if self.suggestion:
+            return f'could not find task "{self.task}", did you mean "{self.suggestion}"?'
         return f'could not find task "{self.task}"'
 
 class MalformedTaskError(TaskipyError):
