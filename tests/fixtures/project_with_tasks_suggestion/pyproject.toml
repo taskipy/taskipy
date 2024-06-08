@@ -1,0 +1,7 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+exit_17 = "exit 17"
+print_hello_stdout = "echo 'hello stdout'"
