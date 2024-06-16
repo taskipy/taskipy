@@ -21,8 +21,7 @@
     - [Installing With PIP](#installing-with-pip)
     - [Running Tasks](#running-tasks-1)
   - [Advanced Use Cases](#advanced-use-cases)
-- [Maintainers :construction:](#maintainers-construction)
-- [Contributors :sparkles:](#contributors-sparkles)
+- [Contribution](#contribution)
 
 ## General
 
