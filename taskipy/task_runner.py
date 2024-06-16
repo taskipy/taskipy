@@ -2,6 +2,7 @@ import sys
 import platform
 import signal
 import subprocess
+from difflib import get_close_matches
 from pathlib import Path
 from types import FrameType
 from typing import Callable, Dict, List, Tuple, Union, Optional
@@ -80,7 +81,12 @@ class TaskRunner:
         try:
             task = self.__project.tasks[task_name]
         except KeyError:
-            raise TaskNotFoundError(task_name)
+            suggestion = None
+            closest_match = get_close_matches(task_name, self.__project.tasks, n=1, cutoff=0.5)
+
+            if closest_match:
+                suggestion = closest_match[0]
+            raise TaskNotFoundError(task_name, suggestion)
 
         return pre_task, task, post_task
 
