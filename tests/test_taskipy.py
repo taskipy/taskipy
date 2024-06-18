@@ -399,6 +399,20 @@ class TaskRunFailTestCase(TaskipyTestCase):
         self.assertSubstr('could not find task "task_that_does_not_exist"', stdout)
         self.assertEqual(exit_code, 127)
 
+    def test_exiting_with_code_127_and_printing_suggestion_if_task_not_found(self):
+        cwd = self.create_test_dir_from_fixture('project_with_tasks_suggestion')
+        exit_code, stdout, _ = self.run_task('stdout', cwd=cwd)
+
+        self.assertSubstr('could not find task "stdout", did you mean "print_hello_stdout"?', stdout)
+        self.assertEqual(exit_code, 127)
+
+    def test_exiting_with_code_127_and_printing_if_task_not_found_and_suggestion(self):
+        cwd = self.create_test_dir_from_fixture("project_with_tasks_suggestion")
+        exit_code, stdout, _ = self.run_task("task_that_does_not_exist", cwd=cwd)
+
+        self.assertEqual('could not find task "task_that_does_not_exist"\n', stdout)
+        self.assertEqual(exit_code, 127)
+
     def test_exiting_with_code_127_and_printing_if_no_arg_is_passed(self):
         cwd = self.create_test_dir_from_fixture("project_with_pyproject_and_tasks")
         executable_path = path.abspath("task")
