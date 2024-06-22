@@ -39,4 +39,3 @@ class TempProjectDir:
 
     def clean(self):
         shutil.rmtree(self._tmpdir, ignore_errors=True)
-    
