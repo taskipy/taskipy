@@ -10,11 +10,9 @@ keywords = ["tasks", "task runner", "development"]
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Topic :: Software Development :: Build Tools"
+    "Topic :: Software Development :: Build Tools",
 ]
-packages = [
-    { include = "taskipy" }
-]
+packages = [{ include = "taskipy" }]
 
 [tool.poetry.scripts]
 task = 'taskipy.cli:main'
@@ -23,14 +21,17 @@ task = 'taskipy.cli:main'
 python = "^3.6"
 tomli = [
     { version = "^2.0.1", python = "^3.7" },
-    { version = "^1.2.3", python = "~3.6" }
+    { version = "^1.2.3", python = "~3.6" },
 ]
 psutil = "^5.7.2"
 mslex = { version = "^1.1.0", markers = "sys_platform == 'win32'" }
 colorama = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
-pylint = "2.12.0"
+pylint = [
+    { version = "2.12.0", python = ">=3.6,<3.8" },
+    { version = ">=3.2.3", python = "^3.8" },
+]
 mypy = "0.971"
 rope = "0.14.0"
 parameterized = "0.8.1"
