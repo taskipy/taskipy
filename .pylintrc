@@ -8,7 +8,8 @@ disable=
       R0915,
       W0703,
       W0707,
-      R1732
+      R1732,
+      R1737
 
 [FORMAT]
 max-line-length=1000
