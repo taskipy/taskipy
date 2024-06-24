@@ -313,6 +313,4 @@ If you have a more specific use case, you might not be the first to run into it!
 
 All kinds of contributions are welcome! Feel free to request features and report bugs via issues, and contribute your own beautiful code via pull requests!
 
-The taskipy project is maintained by:
-* [Roy Sommer](https://github.com/illBeRoy)
-* [Eugene Triguba](https://github.com/eugenetriguba)
+The taskipy project is maintained by [Roy Sommer](https://github.com/illBeRoy). If you're interested in joining the team, feel free to let me know!
