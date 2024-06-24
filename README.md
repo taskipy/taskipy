@@ -21,7 +21,8 @@
     - [Installing With PIP](#installing-with-pip)
     - [Running Tasks](#running-tasks-1)
   - [Advanced Use Cases](#advanced-use-cases)
-- [Contribution](#contribution)
+- [Maintainers :construction:](#maintainers-construction)
+- [Contributors :sparkles:](#contributors-sparkles)
 
 ## General
 
@@ -309,10 +310,32 @@ Where `TASK` is the name of your task.
 
 If you have a more specific use case, you might not be the first to run into it! Head over to the [ADVANCED_FEATURES](./docs/ADVANCED_FEATURES.md) doc, and look it up.
 
-## Contribution
+## Maintainers :construction:
 
-All kinds of contributions are welcome! Feel free to request features and report bugs via issues, and contribute your own beautiful code via pull requests!
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/illBeRoy"><img src="https://avatars2.githubusercontent.com/u/6681893?v=4" width="100px;" alt=""/><br /><sub><b>Roy Sommer</b></sub></a></td>
+    <td align="center"><a href="http://triguba.com"><img src="https://avatars3.githubusercontent.com/u/15860938?v=4" width="100px;" alt=""/><br /><sub><b>Eugene Triguba</b></sub></a></td>
+  </tr>
+</table>
 
-The taskipy project is maintained by:
-* [Roy Sommer](https://github.com/illBeRoy)
-* [Eugene Triguba](https://github.com/eugenetriguba)
+## Contributors :sparkles:
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/RobinFrcd"><img src="https://avatars0.githubusercontent.com/u/29704178?v=4" width="100px;" alt=""/><br /><sub><b>RobinFrcd</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=RobinFrcd" title="Code">💻</a></td>
+    <td align="center"><a href="http://granitosaurus.rocks"><img src="https://avatars0.githubusercontent.com/u/5476164?v=4" width="100px;" alt=""/><br /><sub><b>Bernardas Ališauskas</b></sub></a><br /><a href="https://github.com/illBeRoy/taskipy/commits?author=Granitosaurus" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors)
+specification. Contributions of any kind welcome!
