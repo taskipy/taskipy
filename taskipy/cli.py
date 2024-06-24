@@ -6,6 +6,8 @@ from typing import List, Union
 
 from taskipy.exceptions import TaskipyError, InvalidUsageError
 from taskipy.task_runner import TaskRunner
+from taskipy.decorators import measure_time
+from typing import Callable
 
 
 def main():
@@ -29,6 +31,7 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
         description='runs a task specified in your pyproject.toml under [tool.taskipy.tasks]',
     )
     parser.add_argument('-l', '--list', help='show list of available tasks', action='store_true')
+    parser.add_argument('-t', '--time', help='show excution time of the task', action='store_true')
     parser.add_argument('name', help='name of the task', nargs='?')
     parser.add_argument('args', nargs=argparse.REMAINDER, help='arguments to pass to the task')
     parsed_args = parser.parse_args(args=args)
@@ -36,15 +39,19 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
     try:
         cwd = Path(cwd).resolve() if cwd is not None else Path.cwd()
         runner = TaskRunner(cwd)
+        decorators: List[Callable] = []
 
         if parsed_args.list:
             runner.list()
             return 0
 
+        if parsed_args.time:
+            decorators.append(measure_time)
+
         if parsed_args.name is None:
             raise InvalidUsageError(parser)
 
-        return runner.run(parsed_args.name, parsed_args.args)
+        return runner.run(parsed_args.name, parsed_args.args, decorators)
     except TaskipyError as e:
         print(e)
         return e.exit_code
