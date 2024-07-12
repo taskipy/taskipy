@@ -29,7 +29,6 @@
 [![pypi-downloads](https://img.shields.io/pypi/dm/taskipy?style=flat-square)](https://pypi.org/project/taskipy/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/taskipy.svg)](https://anaconda.org/conda-forge/taskipy)
 [![ci](https://img.shields.io/github/actions/workflow/status/taskipy/taskipy/ci.yml?style=flat-square)](https://github.com/taskipy/taskipy/actions/workflows/ci.yml)
-[![All Contributors](https://img.shields.io/github/all-contributors/illberoy/taskipy?color=orange&style=flat-square)](#contributors-)
 
 **The complementary task runner for python.**
 
