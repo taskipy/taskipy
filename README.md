@@ -289,9 +289,7 @@ By default, all tasks run from the directory where they are called. This makes p
 
 However, some tasks may need to always run in the same working directory, regardless from where they are called.
 
-You could bypass this need by defining variables in the commands, as explained above.
-
-But, if you don't want to pass absolute paths to the commands, then you still can use the setting `"cwd"` to define a current working directory of the task relative to the file `pyproject.toml`:
+If you want tasks to always run relative to a specific path, you can use the `"cwd"` setting to define a current working directory of the task relative to the root of the project (where the `pyproject.toml` file is):
 
 ```toml
 [tool.taskipy.tasks]
