@@ -41,7 +41,7 @@ class Task:
                 raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
             return value
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
     def __extract_task_command(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
@@ -53,7 +53,7 @@ class Task:
             except KeyError:
                 raise MalformedTaskError(self.__task_name, 'the task item does not have the "cmd" property')
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
     def __extract_task_workdir(self, task_toml_contents: object) -> Optional[str]:
         if isinstance(task_toml_contents, str):
@@ -77,4 +77,4 @@ class Task:
             except KeyError:
                 return ''
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars}')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
