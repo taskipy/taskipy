@@ -23,9 +23,9 @@ else:
 
 class TaskRunner:
     def __init__(self, cwd: Union[str, Path]):
-        working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
-        self.__project = PyProject(working_dir)
-        self.__working_dir = self.__get_working_dir() or working_dir
+        cwd_as_path = cwd if isinstance(cwd, Path) else Path(cwd)
+        self.__project = PyProject(cwd_as_path)
+        self.__working_dir = self.__get_working_dir() or cwd_as_path
 
     def list(self):
         """lists tasks to stdout"""
