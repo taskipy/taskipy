@@ -202,9 +202,9 @@ class TaskRunner:
         if task_name is not None:
             cwd = cwd or self.__project.tasks[task_name].workdir
         
-        if cwd is not None and not Path(cwd).is_absolute():
-            relative_dirpath = self.__project.dirpath / cwd
-            if relative_dirpath.exists():
-                return relative_dirpath
+        if cwd is not None:
+            path = self.__project.dirpath / cwd
+            if path.exists():
+                return path
 
         return None
