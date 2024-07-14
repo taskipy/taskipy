@@ -25,3 +25,4 @@ MANIFEST
 .idea
 .python-version
 .DS_Store
+.venv
