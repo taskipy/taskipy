@@ -17,6 +17,7 @@
     - [String Formatting](#string-formatting)
     - [Always Use Variables](#always-use-variables)
     - [Recursive Variables](#recursive-variables)
+  - [Working directory](#working-directory)
   - [Using Taskipy Without Poetry](#using-taskipy-without-poetry)
     - [Installing With PIP](#installing-with-pip)
     - [Running Tasks](#running-tasks-1)
@@ -281,6 +282,30 @@ echo = "echo {package_dir}"
 ```
 
 In this example, we could run `task echo` and we would then see `src/package`.
+
+### Working directory
+
+By default, all tasks run from the directory where they are called. This makes possible to change folder and run flexible tasks depending on the current folder.
+
+However, some tasks may need to always run in the same working directory, regardless from where they are called.
+
+You could bypass this need by defining variables in the commands, as explained above.
+
+But, if you don't want to pass absolute paths to the commands, then you still can use the setting `"cwd"` to define a current working directory of the task relative to the file `pyproject.toml`:
+
+```toml
+[tool.taskipy.tasks]
+echo = { cmd = "python -c \"import os; print(os.getcwd())\"" , cwd = "."}
+```
+
+In this example, running `task echo` will print the directory path of the file `pyproject.toml` regardless of the folder that you call this task.
+
+If you want to define `cwd` globally (setting all tasks to always run from the same working directory) you just need to declare that under taskipy's **settings** table:
+
+```toml
+[tool.taskipy.settings]
+cwd = "."
+```
 
 ### Using Taskipy Without Poetry
 
