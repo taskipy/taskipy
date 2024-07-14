@@ -200,7 +200,7 @@ class TaskRunner:
         cwd: Optional[str] = self.__project.settings.get('cwd', None)
         
         if task_name is not None:
-            cwd = cwd or self.__project.tasks[task_name].workdir
+            cwd = self.__project.tasks[task_name].workdir or cwd
         
         if cwd is not None:
             path = self.__project.dirpath / cwd
