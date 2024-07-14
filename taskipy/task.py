@@ -60,10 +60,10 @@ class Task:
             return None
 
         if isinstance(task_toml_contents, dict):
-            try:
-                return task_toml_contents['cwd']
-            except KeyError:
-                return None
+            value = task_toml_contents.get('cwd')
+            if value is not None and not isinstance(value, str):
+                raise MalformedTaskError(self.__task_name, f'task\'s "cwd" arg has to be str type got {type(value)}')
+            return value
 
         raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
