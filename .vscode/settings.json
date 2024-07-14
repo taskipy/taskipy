@@ -1,7 +1,3 @@
 {
   "editor.tabSize": 4,
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-  "python.linting.mypyEnabled": true,
-  "python.formatting.provider": "none"
 }
