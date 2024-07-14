@@ -24,8 +24,8 @@ else:
 class TaskRunner:
     def __init__(self, cwd: Union[str, Path]):
         working_dir = cwd if isinstance(cwd, Path) else Path(cwd)
-        self.__working_dir = working_dir
         self.__project = PyProject(working_dir)
+        self.__working_dir = self.__get_working_dir() or working_dir
 
     def list(self):
         """lists tasks to stdout"""
@@ -34,6 +34,7 @@ class TaskRunner:
 
     def run(self, task_name: str, args: List[str]) -> int:
         pre_command, command, post_command = self.__get_formatted_commands(task_name)
+        self.__working_dir =  self.__get_working_dir(task_name) or self.__working_dir
 
         if pre_command is not None:
             exit_code = self.__run_command_and_return_exit_code(pre_command)
@@ -194,3 +195,16 @@ class TaskRunner:
                 process.send_signal(signum)
 
         return signal_handler
+
+    def __get_working_dir(self, task_name: Optional[str] = None) -> Optional[Path]:       
+        cwd: Optional[str] = self.__project.settings.get('cwd', None)
+        
+        if task_name is not None:
+            cwd = cwd or self.__project.tasks[task_name].workdir
+        
+        if cwd is not None and not Path(cwd).is_absolute():
+            relative_dirpath = self.__project.dirpath / cwd
+            if relative_dirpath.exists():
+                return relative_dirpath
+
+        return None
