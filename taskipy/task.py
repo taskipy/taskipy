@@ -9,6 +9,7 @@ class Task:
         self.__task_command = self.__extract_task_command(task_toml_contents)
         self.__task_description = self.__extract_task_description(task_toml_contents)
         self.__task_use_vars = self.__extract_task_use_vars(task_toml_contents)
+        self.__task_workdir = self.__extract_task_workdir(task_toml_contents)
 
     @property
     def name(self) -> str:
@@ -17,6 +18,10 @@ class Task:
     @property
     def command(self) -> str:
         return self.__task_command
+
+    @property
+    def workdir(self) -> Optional[str]:
+        return self.__task_workdir
 
     @property
     def description(self) -> str:
@@ -49,6 +54,18 @@ class Task:
                 raise MalformedTaskError(self.__task_name, 'the task item does not have the "cmd" property')
 
         raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+
+    def __extract_task_workdir(self, task_toml_contents: object) -> Optional[str]:
+        if isinstance(task_toml_contents, str):
+            return None
+
+        if isinstance(task_toml_contents, dict):
+            try:
+                return task_toml_contents['cwd']
+            except KeyError:
+                return None
+
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
     def __extract_task_description(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
