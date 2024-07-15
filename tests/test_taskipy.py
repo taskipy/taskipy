@@ -761,3 +761,89 @@ class VariableSchemaTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('echo', cwd=cwd)
         self.assertSubstr('variable test is invalid', stdout)
         self.assertEqual(exit_code, 127)
+
+class SetCWDTestCase(TaskipyTestCase):
+    def test_project_with_cwd_under_settings(self):
+        cwd = self.create_test_dir_from_fixture('project_with_cwd_under_settings')
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=path.join(cwd, 'child_without_pyproject'))
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=path.join(cwd, 'child_with_pyproject'))
+        self.assertTrue(stdout.strip().endswith("child_without_pyproject"))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=path.join(cwd, 'child_with_pyproject/alternative_calling_folder'))
+        self.assertTrue(stdout.strip().endswith("child_without_pyproject"))
+        self.assertEqual(exit_code, 0)        
+    
+    def test_project_with_cwd_under_specifc_task(self):
+        cwd = self.create_test_dir_from_fixture('project_with_cwd_under_specifc_task')
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=path.join(cwd, 'subfolder'))
+        self.assertTrue(stdout.strip().endswith("subfolder"))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwd', cwd=path.join(cwd, 'alternative_calling_folder'))
+        self.assertTrue(stdout.strip().endswith("alternative_calling_folder"))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith("subfolder"))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=path.join(cwd, 'subfolder'))
+        self.assertTrue(stdout.strip().endswith("subfolder"))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=path.join(cwd, 'alternative_calling_folder'))
+        self.assertTrue(stdout.strip().endswith("subfolder"))
+        self.assertEqual(exit_code, 0)
+    
+    def test_project_with_cwd_under_specific_task_and_settings(self):
+        cwd = self.create_test_dir_from_fixture('project_with_cwd_under_specific_task_and_settings')
+        
+        exit_code, stdout, _ = self.run_task('pwdglobalcwd', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith("global_cwd"))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdglobalcwd', cwd=path.join(cwd, 'subfolder'))
+        self.assertTrue(stdout.strip().endswith("global_cwd"))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwdglobalcwd', cwd=path.join(cwd, 'global_cwd'))
+        self.assertTrue(stdout.strip().endswith("global_cwd"))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdpyproject', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdpyproject', cwd=path.join(cwd, 'subfolder'))
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwdpyproject', cwd=path.join(cwd, 'global_cwd'))
+        self.assertTrue(stdout.strip().endswith(cwd))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=cwd)
+        self.assertTrue(stdout.strip().endswith('subfolder'))
+        self.assertEqual(exit_code, 0)
+
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=path.join(cwd, 'subfolder'))
+        self.assertTrue(stdout.strip().endswith('subfolder'))
+        self.assertEqual(exit_code, 0)
+        
+        exit_code, stdout, _ = self.run_task('pwdsub', cwd=path.join(cwd, 'global_cwd'))
+        self.assertTrue(stdout.strip().endswith('subfolder'))
+        self.assertEqual(exit_code, 0)
