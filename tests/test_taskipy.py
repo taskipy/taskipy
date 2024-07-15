@@ -782,8 +782,8 @@ class SetCWDTestCase(TaskipyTestCase):
         self.assertTrue(stdout.strip().endswith("child_without_pyproject"))
         self.assertEqual(exit_code, 0)        
     
-    def test_project_with_cwd_under_specifc_task(self):
-        cwd = self.create_test_dir_from_fixture('project_with_cwd_under_specifc_task')
+    def test_project_with_cwd_under_specific_task(self):
+        cwd = self.create_test_dir_from_fixture('project_with_cwd_under_specific_task')
         
         exit_code, stdout, _ = self.run_task('pwd', cwd=cwd)
         self.assertTrue(stdout.strip().endswith(cwd))
