@@ -304,7 +304,7 @@ class TaskDescriptionTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('print_age', cwd=cwd)
 
         self.assertEqual(exit_code, 1)
-        self.assertSubstr('tasks must be strings, or dicts that contain { cmd, help, use_vars }', stdout)
+        self.assertSubstr('tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }', stdout)
 
 
 class TaskRunFailTestCase(TaskipyTestCase):
