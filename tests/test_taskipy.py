@@ -1,4 +1,5 @@
 import os
+import platform
 import random
 import signal
 import subprocess
@@ -43,7 +44,7 @@ class TaskipyTestCase(unittest.TestCase):
         args: Optional[List[str]] = None,
         cwd=os.curdir,
     ) -> subprocess.Popen:
-        executable_path = path.abspath('task')
+        executable_path = path.abspath('task.bat' if platform.system() == 'Windows' else 'task')
         args = args or []
         return subprocess.Popen([executable_path, task] + args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
 
