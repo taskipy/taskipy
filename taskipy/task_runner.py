@@ -196,12 +196,12 @@ class TaskRunner:
 
         return signal_handler
 
-    def __get_working_dir(self, task_name: Optional[str] = None) -> Optional[Path]:       
-        cwd: Optional[str] = self.__project.settings.get('cwd', None)
-        
+    def __get_working_dir(self, task_name: Optional[str] = None) -> Optional[Path]:
+        cwd: Optional[str] = self.__project.settings.get("cwd", None)
+
         if task_name is not None:
             cwd = self.__project.tasks[task_name].workdir or cwd
-        
+
         if cwd is not None:
             path = self.__project.dirpath / cwd
             if path.exists():
