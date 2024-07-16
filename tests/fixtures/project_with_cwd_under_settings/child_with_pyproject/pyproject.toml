@@ -1,0 +1,9 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.settings]
+cwd = "../child_without_pyproject"
+
+[tool.taskipy.tasks]
+pwd = { cmd = "python -c \"import os; print(os.getcwd())\"" }
