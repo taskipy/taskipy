@@ -1,0 +1,7 @@
+[tool.poetry]
+name = "taskipy"
+description = "tasks runner for python projects"
+
+[tool.taskipy.tasks]
+pwd = { cmd = "python -c \"import os; print(os.getcwd())\"" }
+pwdsub = { cmd = "python -c \"import os; print(os.getcwd())\"", cwd = "./subfolder" }

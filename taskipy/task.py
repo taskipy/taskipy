@@ -9,6 +9,7 @@ class Task:
         self.__task_command = self.__extract_task_command(task_toml_contents)
         self.__task_description = self.__extract_task_description(task_toml_contents)
         self.__task_use_vars = self.__extract_task_use_vars(task_toml_contents)
+        self.__task_workdir = self.__extract_task_workdir(task_toml_contents)
 
     @property
     def name(self) -> str:
@@ -17,6 +18,10 @@ class Task:
     @property
     def command(self) -> str:
         return self.__task_command
+
+    @property
+    def workdir(self) -> Optional[str]:
+        return self.__task_workdir
 
     @property
     def description(self) -> str:
@@ -36,7 +41,7 @@ class Task:
                 raise MalformedTaskError(self.__task_name, f'task\'s "use_vars" arg has to be bool type got {type(value)}')
             return value
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
     def __extract_task_command(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
@@ -48,7 +53,19 @@ class Task:
             except KeyError:
                 raise MalformedTaskError(self.__task_name, 'the task item does not have the "cmd" property')
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars }')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
+
+    def __extract_task_workdir(self, task_toml_contents: object) -> Optional[str]:
+        if isinstance(task_toml_contents, str):
+            return None
+
+        if isinstance(task_toml_contents, dict):
+            value = task_toml_contents.get('cwd')
+            if value is not None and not isinstance(value, str):
+                raise MalformedTaskError(self.__task_name, f'task\'s "cwd" arg has to be str type got {type(value)}')
+            return value
+
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
 
     def __extract_task_description(self, task_toml_contents: object) -> str:
         if isinstance(task_toml_contents, str):
@@ -60,4 +77,4 @@ class Task:
             except KeyError:
                 return ''
 
-        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, help, use_vars}')
+        raise MalformedTaskError(self.__task_name, 'tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }')
