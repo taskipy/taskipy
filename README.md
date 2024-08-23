@@ -195,7 +195,7 @@ The pretask hook looks for `pre_<task_name>` task for a given `task_name`. It wi
 
 #### Post Task Hook
 
-From time to time, you might want to run a task in conjuction with another. For example, you might want to run linting after a successful test run. Take the two following commands, for instance:
+From time to time, you might want to run a task in conjunction with another. For example, you might want to run linting after a successful test run. Take the two following commands, for instance:
 
 ```toml
 [tool.taskipy.tasks]
