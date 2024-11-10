@@ -167,7 +167,7 @@ And then create a composite task:
 
 ```toml
 [tool.taskipy.tasks]
-lint = "task lint_pylint && task lint_mypy"
+lint = { subtasks = ["lint_pylint", "lint_mypy"] }
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
 ```

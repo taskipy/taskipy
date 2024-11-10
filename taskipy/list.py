@@ -27,7 +27,7 @@ class TasksListFormatter:
 
         for task in self.__tasks:
             name_text = task.name
-            desc_text = task.description or task.command
+            desc_text = task.description or task.command or task.name
 
             tasks_col_text = f'{name_text:<{longest_item_in_tasks_col}}'
             desc_col_text = '\n'.join(textwrap.wrap(desc_text,

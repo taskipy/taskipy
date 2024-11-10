@@ -28,7 +28,8 @@ class PyProject:
 
         tasks = {}
         for name, toml_contents in toml_tasks:
-            tasks[name] = Task(name, toml_contents)
+            my_task = Task(name, toml_contents)
+            tasks[name] = my_task
 
         return tasks
 

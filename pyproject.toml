@@ -42,7 +42,7 @@ post_test = "./task lint"
 
 test_windows = { cmd = "python -m unittest -v tests\\test_windows.py", help = "this is a command that is run by our Windows CI on Github" }
 
-lint = { cmd = "./task lint_pylint && ./task lint_mypy", help = "lint project with pylint for style and mypy for typings" }
+lint = { subtasks = ["lint_pylint", "lint_mypy"], help = "lint project with pylint for style and mypy for typings" }
 lint_pylint = "pylint tests taskipy"
 lint_mypy = "mypy tests taskipy"
 

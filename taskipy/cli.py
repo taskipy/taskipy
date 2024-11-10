@@ -36,7 +36,6 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
     try:
         cwd = Path(cwd).resolve() if cwd is not None else Path.cwd()
         runner = TaskRunner(cwd)
-
         if parsed_args.list:
             runner.list()
             return 0
@@ -45,6 +44,7 @@ def run(args: List[str], cwd: Union[str, Path, None] = None) -> int:
             raise InvalidUsageError(parser)
 
         return runner.run(parsed_args.name, parsed_args.args)
+
     except TaskipyError as e:
         print(e)
         return e.exit_code

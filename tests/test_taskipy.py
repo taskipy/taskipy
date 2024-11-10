@@ -1,6 +1,7 @@
 import os
 import platform
 import random
+import re
 import signal
 import subprocess
 import time
@@ -304,7 +305,8 @@ class TaskDescriptionTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task('print_age', cwd=cwd)
 
         self.assertEqual(exit_code, 1)
-        self.assertSubstr('tasks must be strings, or dicts that contain { cmd, cwd, help, use_vars }', stdout)
+        self.assertSubstr(
+            'tasks must be strings, or dicts that contain { cmd, cwd, help, subtasks, use_vars }', stdout)
 
 
 class TaskRunFailTestCase(TaskipyTestCase):
@@ -848,3 +850,51 @@ class SetCWDTestCase(TaskipyTestCase):
         exit_code, stdout, _ = self.run_task("pwdsub", cwd=path.join(cwd, "global_cwd"))
         self.assertTrue(stdout.strip().endswith("subfolder"))
         self.assertEqual(exit_code, 0)
+
+
+class SubtasksTestCase(TaskipyTestCase):
+    def test_subtasks(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            a = { cmd = "echo a:" }
+            b = { cmd = "echo b:" }
+            c = { cmd = "echo c:" }
+            abc = { subtasks = ['c', 'b', 'a'] }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('abc', cwd=cwd)
+        self.assertTrue(re.search(r'c*a', stdout))
+        self.assertSubstr('echo c:', stdout)
+        self.assertSubstr('echo b:', stdout)
+        self.assertSubstr('echo a:', stdout)
+        self.assertEqual(exit_code, 0)
+
+    def test_subtasks_with_runner(self):
+        py_project_toml = '''
+            [tool.taskipy.settings]
+            runner = "echo"
+
+            [tool.taskipy.tasks]
+            a = { cmd = "echo a:" }
+            b = { cmd = "echo b:" }
+            c = { cmd = "echo c:" }
+            abc = { subtasks = ['a', 'b', 'c'] }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('abc', cwd=cwd)
+        self.assertSubstr('echo a:', stdout)
+        self.assertSubstr('echo b:', stdout)
+        self.assertSubstr('echo c:', stdout)
+        self.assertEqual(exit_code, 0)
+
+
+    def test_subtasks_with_cmd_should_fail(self):
+        py_project_toml = '''
+            [tool.taskipy.tasks]
+            a = { cmd = "echo a:" }
+            abc = { cmd = 'echo a', subtasks = ['a'] }
+        '''
+        cwd = self.create_test_dir_with_py_project_toml(py_project_toml)
+        exit_code, stdout, _ = self.run_task('abc', cwd=cwd)
+        self.assertSubstr('the task item must include "cmd" or "subtasks". Never both.', stdout)
+        self.assertEqual(exit_code, 1)

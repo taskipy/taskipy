@@ -33,6 +33,16 @@ class TaskRunner:
         formatter.print()
 
     def run(self, task_name: str, args: List[str]) -> int:
+        subtasks = self.__get_subtasks(task_name)
+        if not subtasks:
+            return self.__run_commands(task_name, args)
+        result: int = 1
+        for subtask in subtasks:
+            if subtask:
+                result = self.__run_commands(subtask, None)
+        return result
+
+    def __run_commands(self, task_name: str, args: List[str] | None) -> int:
         pre_command, command, post_command = self.__get_formatted_commands(task_name)
         self.__working_dir =  self.__get_working_dir(task_name) or self.__working_dir
 
@@ -67,13 +77,21 @@ class TaskRunner:
         if pre_task is not None:
             pre_command = self.__format_task_command(pre_task, variables)
 
-        command = self.__format_task_command(task, variables)
+        command: str = ''
+        if task.command:
+            command = self.__format_task_command(task, variables)
 
         post_command = None
         if post_task is not None:
             post_command = self.__format_task_command(post_task, variables)
 
         return pre_command, command, post_command
+
+    def __get_subtasks(self, task_name: str) -> List[str] | None:
+        task_config = self.__project.tasks.get(task_name)
+        if task_config:
+            return task_config.subtasks
+        return None
 
     def __get_tasks(self, task_name: str) -> Tuple[Optional[Task], Task, Optional[Task]]:
         pre_task = self.__pre_task(task_name)
@@ -142,6 +160,12 @@ class TaskRunner:
         return nonrecursive_vars, recursive_vars
 
     def __format_task_command(self, task: Task, variables: dict) -> str:
+        if not task.command:
+            raise MalformedTaskError(
+                task.name,
+                f'command expected in task {task}'
+            )
+
         if task.use_vars or (
             task.use_vars is None and self.__project.settings.get('use_vars')
         ):
