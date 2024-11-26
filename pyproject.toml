@@ -19,7 +19,6 @@ task = 'taskipy.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.6"
-poetry = "^1.1.0"
 tomli = [
     { version = "^2.0.1", python = "^3.7" },
     { version = "^1.2.3", python = "~3.6" },
