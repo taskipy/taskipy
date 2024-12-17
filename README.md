@@ -70,7 +70,7 @@ Your project directory should include a valid `pyproject.toml` file, as specifie
 To install taskipy as a dev dependency, simply run:
 
 ```bash
-poetry add --dev taskipy
+poetry add --group dev taskipy
 ```
 
 For Anaconda Python-based environments, taskipy is also available via conda-forge:
